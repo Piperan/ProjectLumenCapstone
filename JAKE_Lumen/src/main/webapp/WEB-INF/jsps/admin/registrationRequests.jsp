@@ -49,7 +49,7 @@ footer {
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
               <a class="dropdown-item" href="portfolio-1-col.html">My Profile</a>
-              <a class="dropdown-item" href="portfolio-2-col.html">Issues</a>
+              <a class="dropdown-item" href="mailto:bayanie@sheridancollege.ca">Issues</a>
               <a class="dropdown-item" href="<c:url value="/logout"/>">Logout</a>
             </div>
           </li>

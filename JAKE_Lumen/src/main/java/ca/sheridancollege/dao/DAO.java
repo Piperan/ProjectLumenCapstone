@@ -1,5 +1,3 @@
-//Testing Git
-//added comment
 package ca.sheridancollege.dao;
 
 import java.util.*;
@@ -97,30 +95,29 @@ public class DAO {
 		return projectList;
 	}
 	//Method to Retrieve all the projects by their user
-		public List<Project> getAllProjectsByUser(User loggedUser) {
-			Session session = sessionFactory.openSession();
-			session.beginTransaction();
-			
-			// Make a List of projects that will hold the users project objects;
-			List<Project> projectList = new ArrayList<Project>();
-			
-			//Get the project Id's Of all the users projects
-			List<Integer> usersProjects;
-			Query query = session.createQuery("Select p.projectId from Project p JOIN p.users where userId=:userId");
-			query.setParameter("userId", loggedUser.getUserid());
-		    usersProjects = (List<Integer>) query.getResultList();
-		    
-		    //Getting the users projects based of of the project ID and adding to projectList
-		    usersProjects.forEach((Integer temp) ->{
-		    	projectList.add(getProjectById(temp));
-		    });
-		     
-			session.getTransaction().commit();
-			session.close();
+	public List<Project> getAllProjectsByUser(User loggedUser) {
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		
+		// Make a List of projects that will hold the users project objects;
+		List<Project> projectList = new ArrayList<Project>();
+		
+		//Get the project Id's Of all the users projects
+		List<Integer> usersProjects;
+		Query query = session.createQuery("Select p.projectId from Project p JOIN p.users where userId=:userId");
+		query.setParameter("userId", loggedUser.getUserid());
+		usersProjects = (List<Integer>) query.getResultList();
+		
+		//Getting the users projects based of of the project ID and adding to projectList
+		usersProjects.forEach((Integer temp) ->{
+			projectList.add(getProjectById(temp));
+		});
+		 
+		session.getTransaction().commit();
+		session.close();
 
-			return projectList;
-		}
-
+		return projectList;
+	}
 	//Method to Retrieve all the Users
 	public List<User> getAllUsers() {
 		Session session = sessionFactory.openSession();
@@ -136,7 +133,7 @@ public class DAO {
 		return userList;
 	}
 
-	//Method to Add project on success returns true on failure returns false
+	//Method to Add project on succsess returns true on failure returns false
 	@SuppressWarnings("unchecked")
 	public boolean addProject(Project project, User user) {
 		Session session = sessionFactory.openSession();
@@ -403,4 +400,5 @@ public class DAO {
 		}
 		return errorList;
 	}
+	
 }

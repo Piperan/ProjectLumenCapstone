@@ -118,6 +118,31 @@ public class DAO {
 
 		return projectList;
 	}
+	//Method to Retrieve all forms based on the project 
+		public List<Form> getAllFormsByProject(Project proj) {
+			Session session = sessionFactory.openSession();
+			session.beginTransaction();
+			
+			// Make a List of projects that will hold the users project objects;
+			List<Form> formList = new ArrayList<Form>();
+			
+			//Get the project Id's Of all the users projects
+			List<Integer> formProjects;
+			Query query = session.createQuery("Select f.formid from Form f JOIN f.projects where projectId=:projId");
+			query.setParameter("projId", proj.getProjectId());
+			formProjects = (List<Integer>) query.getResultList();
+			
+			//Getting the users projects based of of the project ID and adding to projectList
+			formProjects.forEach((Integer temp) ->{
+				formList.add(getFormById(temp));
+			});
+			 
+			session.getTransaction().commit();
+			session.close();
+
+			return formList;
+		}
+	
 	//Method to Retrieve all the Users
 	public List<User> getAllUsers() {
 		Session session = sessionFactory.openSession();
@@ -185,7 +210,7 @@ public class DAO {
 		return projectAdded;
 	}
 	
-	// Method to get project by id returns null if it dose not exist
+	// Method to get project by id returns null if it does not exist
 	@SuppressWarnings("unchecked")
 	public Project getProjectById(int projectId) {
 		Session session = sessionFactory.openSession();
@@ -209,6 +234,31 @@ public class DAO {
 		}
 
 	}
+	
+	// Method to get project by id returns null if it does not exist
+		@SuppressWarnings("unchecked")
+		public Form getFormById(int formid) {
+			Session session = sessionFactory.openSession();
+			session.beginTransaction();
+			
+			//Retrieving projects by id
+			List<Form> formList;
+			Query query = session.createQuery("from Form where formid=:id");
+			query.setParameter("id", formid);
+			formList = query.getResultList();
+
+			
+			session.getTransaction().commit();
+			session.close();
+
+			//checking if anything was returned if not returns null if there was returns the project
+			if (formList == null || formList.size() == 0) {
+				return null;
+			} else {
+				return formList.get(0);
+			}
+
+		}
 	
 	//Method to Find a User by their username if username doesn't exit return false
 	public User findUserByName(String uName) {

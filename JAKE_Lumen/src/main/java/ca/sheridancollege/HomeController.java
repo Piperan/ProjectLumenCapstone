@@ -375,18 +375,17 @@ public class HomeController {
 		model.addAttribute("projects",overList);
 		return "user/viewReports";
 	}
-	@RequestMapping("/user/viewProject") 
-	public String viewProject(Model model) { 
-		String username;
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (principal instanceof UserDetails) {
-			username = ((UserDetails)principal).getUsername();
-		} else {
-			username = principal.toString();
-		}
-		model.addAttribute("username",username);
-		
+	
+	//view a specific project
+	@RequestMapping("/user/viewProject/{projectId}") 
+	public String viewProject(Model model, @PathVariable int projectId) { 
+		Project proj=dao.getProjectById(projectId);
+		model.addAttribute("project",proj);
+		model.addAttribute("project",proj);
+		model.addAttribute("projForms",dao.getAllFormsByProject(proj));
+		model.addAttribute("username",getUsername());
 		return "user/viewProject";
 	}
+	
 	
 }

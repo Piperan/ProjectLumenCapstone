@@ -8,7 +8,6 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,6 +50,16 @@ public class HomeController {
 		return "error/th_error";
 	}
 	
+	String getUsername(){
+		String getMe;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+			getMe= ((UserDetails)principal).getUsername();
+		} else {
+			getMe = principal.toString();
+		}
+		return getMe;
+	}
 	@RequestMapping("/user") 
 	public String goSecuredHome(Model model)
 	{
@@ -66,25 +75,15 @@ public class HomeController {
 		User user = dao.getUserByUsername(username);
 		List<Project> projects=dao.getAllProjectsByUser(dao.getUserByUsername(username));
 		model.addAttribute("projects",projects);
-//		projects.forEach((Project project) ->{
-//			System.out.println(project.getUsers().toString());
-//		});
+
 		return "user/homeUser";
 	}
 	
 	@RequestMapping("/user/createProject") 
 	public String goCreateProject(Model model)
 	{
-		String username;
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (principal instanceof UserDetails) {
-			username = ((UserDetails)principal).getUsername();
-		} else {
-			username = principal.toString();
-		}
-		System.out.print("The Current user is " + username);
-		//User x= dao.findUserByName(username);
-		//System.out.println(x);
+		
+		model.addAttribute("username",getUsername());
 		model.addAttribute("projects",dao.getAllProjects());
 		return "user/homeUser";
 	}
@@ -126,6 +125,7 @@ public class HomeController {
 	{
 		User p2=new User();
 	    model.addAttribute("user",p2);
+	    model.addAttribute("username",getUsername());
 		return "register";
 	}
 	@RequestMapping("/registerSend") 
@@ -136,27 +136,21 @@ public class HomeController {
 			dao.addUser(user);
 		}
 		User p2=new User();
+		model.addAttribute("username",getUsername());
 	    model.addAttribute("user",p2);
 		return "register";
 	}
 	@GetMapping("/admin/registrationRequests") 
 	public String goRegistrationRequestPage(Model model)
 	{
+		model.addAttribute("username",getUsername());
 		model.addAttribute("users",dao.getDisabledUsers());
 		return "admin/registrationRequests";
 	}
 	@GetMapping("/admin/viewUsers") 
 	public String goViewUsersPage(Model model)
 	{
-		String username;
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (principal instanceof UserDetails) {
-			username = ((UserDetails)principal).getUsername();
-		} else {
-			username = principal.toString();
-		}
-		System.out.print("The Current user is " + username);
-		model.addAttribute("username",username);
+		model.addAttribute("username",getUsername());
 		model.addAttribute("users",dao.getEnabledUsers());
 		return "admin/viewUsers";
 	}
@@ -170,6 +164,7 @@ public class HomeController {
 			user = new User();
 		}
 		model.addAttribute("users",dao.getEnabledUsers());
+		model.addAttribute("username",getUsername());
 		return "admin/viewUsers";
 	}
 	@RequestMapping("/admin/deleteDisabledUser/{userid}") 
@@ -182,17 +177,18 @@ public class HomeController {
 			user = new User();
 		}
 		model.addAttribute("users",dao.getDisabledUsers());
+		model.addAttribute("username",getUsername());
 		return "admin/registrationRequests";
 	}
 	
 	@RequestMapping("/EditUser")
 	public String editUser2(@ModelAttribute User user, Model model, @RequestParam int userid) {
-
+		
 		dao.editUser(userid, user);
 		
 		List<User> users = dao.getAllUsers();
 		model.addAttribute("users",users);
-
+		model.addAttribute("username",getUsername());
 		return "admin/viewUsers";
 
 	}
@@ -200,7 +196,7 @@ public class HomeController {
 	public String goEditUser(Model model, @PathVariable int userid) { 
 
 		User user = dao.getUserById(userid);
-		
+		model.addAttribute("username",getUsername());
 		model.addAttribute("user",user);
 		return "admin/EditMovie";
 	}
@@ -209,7 +205,7 @@ public class HomeController {
 
 		User user = dao.getUserById(userid);
 		dao.enableUser(userid, user);
-		
+		model.addAttribute("username",getUsername());
 		model.addAttribute("users",dao.getDisabledUsers());
 		return "admin/registrationRequests";
 	}
@@ -324,22 +320,15 @@ public class HomeController {
 	
 	@RequestMapping("/user/saveProject") 
 	public String saveProject(Model model) { 
+		model.addAttribute("username",getUsername());
 		model.addAttribute("project",new Project());
 		return "user/createProject";
 	}
 	@RequestMapping("/user/myReports") 
 	public String myReport(Model model) { 
-		String username;
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (principal instanceof UserDetails) {
-			username = ((UserDetails)principal).getUsername();
-		} else {
-			username = principal.toString();
-		}
-		User x= dao.findUserByName(username);
-		List<Project> projList=x.getProjects();
-		model.addAttribute("username",username);
-		model.addAttribute("projects",projList);
+		
+		model.addAttribute("username",getUsername());
+		//model.addAttribute("projects",projList);
 		return "user/viewReports";
 	}
 	
@@ -399,4 +388,5 @@ public class HomeController {
 		
 		return "user/viewProject";
 	}
+	
 }

@@ -34,20 +34,20 @@ public class DAO {
 		String fname1 = namesF[randomNum(9, 0)];
 		String fname2 = namesF[randomNum(9, 0)];
 		// Make new users
-		User user1 = new User(fname1, hashedPassword, true, fname1, namesL[randomNum(9, 0)],
-				randomNum(1, 100) + " " + streetName[randomNum(9, 0)]);
-		User user2 = new User(fname2, hashedPassword, true, fname2, namesL[randomNum(9, 0)],
-				randomNum(1, 100) + " " + streetName[randomNum(9, 0)]);
+//		User user1 = new User(fname1, hashedPassword, true, fname1, namesL[randomNum(9, 0)],
+//				randomNum(1, 100) + " " + streetName[randomNum(9, 0)]);
+//		User user2 = new User(fname2, hashedPassword, true, fname2, namesL[randomNum(9, 0)],
+//				randomNum(1, 100) + " " + streetName[randomNum(9, 0)]);
 		// Making and Adding Role to new user
-		UserRole ur1 = new UserRole(user1, "ROLE_ADMIN");
-		UserRole ur2 = new UserRole(user2, "ROLE_USER");
-		user1.getUserRoles().add(ur1);
-		user2.getUserRoles().add(ur2);
-		// Saving User and Roles
-		session.save(user1);
-		session.save(user2);
-		session.save(ur2);
-		session.save(ur1);
+//		UserRole ur1 = new UserRole(user1, "ROLE_ADMIN");
+//		UserRole ur2 = new UserRole(user2, "ROLE_USER");
+//		user1.getUserRoles().add(ur1);
+//		user2.getUserRoles().add(ur2);
+//		// Saving User and Roles
+//		session.save(user1);
+//		session.save(user2);
+//		session.save(ur2);
+//		session.save(ur1);
 
 		session.getTransaction().commit();
 		session.close();
@@ -102,9 +102,16 @@ public class DAO {
 		// Make a List of projects that will hold the users project objects;
 		List<Project> projectList = new ArrayList<Project>();
 		
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.print(loggedUser.getUserid());
+		System.out.println();
+		System.out.println();
+		System.out.println();
 		//Get the project Id's Of all the users projects
 		List<Integer> usersProjects;
-		Query query = session.createQuery("Select p.projectId from Project p JOIN p.users where userId=:userId");
+		Query query = session.createQuery("Select p.projectId from Project p JOIN p.users where users_userId=:userId");
 		query.setParameter("userId", loggedUser.getUserid());
 		usersProjects = (List<Integer>) query.getResultList();
 		
@@ -167,7 +174,7 @@ public class DAO {
 		boolean projectAdded = false;
 		
 		// Adding forms to the project
-		List<Project> projects =new ArrayList<Project>();
+		List<Project> projects = getAllProjectsByUser(user);
 		projects.add(project);
 		List<Form> forms=project.getForms();
 		for (Form var : forms) 

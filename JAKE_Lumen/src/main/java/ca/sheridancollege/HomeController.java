@@ -72,7 +72,6 @@ public class HomeController {
 		}
 		System.out.print("The Current user is " + username);
 		model.addAttribute("username",username);
-		User user = dao.getUserByUsername(username);
 		List<Project> projects=dao.getAllProjectsByUser(dao.getUserByUsername(username));
 		model.addAttribute("projects",projects);
 

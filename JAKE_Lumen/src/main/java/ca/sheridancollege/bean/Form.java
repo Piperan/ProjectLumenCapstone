@@ -34,6 +34,9 @@ public class Form {
 	@Column(name="urlPath", nullable=false, length=250)
 	private String urlPath;
 	
+	@Column(name="content", nullable=true)
+	private byte[] content;
+	
 	@ManyToMany(cascade=CascadeType.ALL)
 	@Column(name="projects", nullable=true, length=60)
 	private List<Project> projects = new ArrayList<Project>();
@@ -42,7 +45,11 @@ public class Form {
 		this.formName = formName;
 		this.urlPath = urlPath;
 	}
-	
+	public Form(String formName, String urlPath, byte[] content) {
+		this.formName = formName;
+		this.urlPath = urlPath;
+		this.content = content;
+	}
 	
 
 	

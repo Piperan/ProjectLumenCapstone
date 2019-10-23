@@ -55,7 +55,7 @@ footer {
 					<li class="nav-item"><a class="nav-link"
 						href="<c:url value="/user/saveProject"/>">Create Project</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="<c:url value="user/reports"/>">Reports</a></li>
+						href="<c:url value="user/myReports"/>">Reports</a></li>
 					<c:set var="result" scope="session" value="${username}" />
 					<li class="nav-item dropdown"><a
 						class="nav-link dropdown-toggle" href="#"

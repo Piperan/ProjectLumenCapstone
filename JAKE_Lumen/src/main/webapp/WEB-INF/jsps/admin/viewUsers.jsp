@@ -84,6 +84,7 @@ footer {
 					<th>Last Name</th>
 					<th>Username</th>
 					<th>Address</th>
+					<th>Email</th>
 					<th>Edit</th>
 					<!-- <th>Delete</th>  -->
 				</tr>
@@ -94,6 +95,7 @@ footer {
 					<th>Last Name</th>
 					<th>Username</th>
 					<th>Address</th>
+					<th>Email</th>
 					<th>Edit</th>
 					<!-- <th>Delete</th>  -->
 				</tr>
@@ -105,6 +107,7 @@ footer {
 	<td>${User.lastName}</td>
 	<td>${User.username}</td>
 	<td>${User.address}</td>
+	<td>${User.email }
 	<td><a class="anchor" href="<c:url value="/admin/editUser/${User.userid}"/>">Edit</a></td>
 	<!--<td><a class="anchor" href="<c:url value="/admin/deleteEnabledUser/${User.userid}"/>">Delete</a></td>-->
 </tr>

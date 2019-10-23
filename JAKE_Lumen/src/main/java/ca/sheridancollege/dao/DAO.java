@@ -34,9 +34,9 @@ public class DAO {
 		String fname1 = namesF[randomNum(9, 0)];
 		String fname2 = namesF[randomNum(9, 0)];
 		// Make new users
-		User user1 = new User(fname1, hashedPassword, true, fname1, namesL[randomNum(9, 0)],
+		User user1 = new User("Andrew", hashedPassword,"myEmail@email.com", true, "Andrew", namesL[randomNum(9, 0)],
 				randomNum(1, 100) + " " + streetName[randomNum(9, 0)]);
-		User user2 = new User(fname2, hashedPassword, true, fname2, namesL[randomNum(9, 0)],
+		User user2 = new User("Evangeline", hashedPassword,"myEmail@email.com", true, "Evangeline", namesL[randomNum(9, 0)],
 				randomNum(1, 100) + " " + streetName[randomNum(9, 0)]);
 		// Making and Adding Role to new user
 		UserRole ur1 = new UserRole(user1, "ROLE_ADMIN");
@@ -104,7 +104,7 @@ public class DAO {
 		
 		//Get the project Id's Of all the users projects
 		List<Integer> usersProjects;
-		Query query = session.createQuery("Select p.projectId from Project p JOIN p.users where userId=:userId");
+		Query query = session.createQuery("Select p.projectId from Project p JOIN p.users where users_userId=:userId");
 		query.setParameter("userId", loggedUser.getUserid());
 		usersProjects = (List<Integer>) query.getResultList();
 		
@@ -167,7 +167,7 @@ public class DAO {
 		boolean projectAdded = false;
 		
 		// Adding forms to the project
-		List<Project> projects =new ArrayList<Project>();
+		List<Project> projects = getAllProjectsByUser(user);
 		projects.add(project);
 		List<Form> forms=project.getForms();
 		for (Form var : forms) 
@@ -182,6 +182,7 @@ public class DAO {
 		m.setLastName(user.getLastName());
 		m.setUsername(user.getUsername());
 		m.setPassword(user.getPassword());
+		m.setEmail(user.getEmail());
 		m.setAddress(user.getAddress());
 		m.setEnabled(true);
 		m.setProjects(projects);
@@ -360,6 +361,7 @@ public class DAO {
 		m.setLastName(user.getLastName());
 		m.setUsername(user.getUsername());
 		m.setPassword(user.getPassword());
+		m.setEmail(user.getEmail());
 		m.setAddress(user.getAddress());
 
 		session.getTransaction().commit();
@@ -377,6 +379,7 @@ public class DAO {
 		m.setLastName(user.getLastName());
 		m.setUsername(user.getUsername());
 		m.setPassword(user.getPassword());
+		m.setEmail(user.getEmail());
 		m.setAddress(user.getAddress());
 		m.setEnabled(true);
 

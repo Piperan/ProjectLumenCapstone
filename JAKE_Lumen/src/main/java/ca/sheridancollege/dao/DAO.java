@@ -102,13 +102,6 @@ public class DAO {
 		// Make a List of projects that will hold the users project objects;
 		List<Project> projectList = new ArrayList<Project>();
 		
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.print(loggedUser.getUserid());
-		System.out.println();
-		System.out.println();
-		System.out.println();
 		//Get the project Id's Of all the users projects
 		List<Integer> usersProjects;
 		Query query = session.createQuery("Select p.projectId from Project p JOIN p.users where users_userId=:userId");

@@ -81,6 +81,12 @@ footer {
 		 </div>
         <form:input path="lastName" placeholder="Last Name" class="form-control"></form:input>
     </div> <!-- form-group// -->
+     <div class="form-group input-group">
+    	<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+		 </div>
+        <form:input path="email" placeholder="Email" class="form-control"></form:input>
+    </div>
     <div class="form-group input-group">
     	<div class="input-group-prepend">
 		    <span class="input-group-text"> <i class="fa fa-user"></i> </span>

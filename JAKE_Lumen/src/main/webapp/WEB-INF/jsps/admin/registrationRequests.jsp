@@ -85,6 +85,7 @@ footer {
 						<th>Last Name</th>
 						<th>Username</th>
 						<th>Address</th>
+						<th>Email</th>
 						<th>Enable</th>
 					<!-- <th>Delete</th>  -->
 				</tr>
@@ -95,6 +96,7 @@ footer {
 					<th>Last Name</th>
 					<th>Username</th>
 					<th>Address</th>
+					<th>Email</th>
 					<th>Edit</th>
 					<!-- <th>Delete</th>  -->
 				</tr>
@@ -106,6 +108,7 @@ footer {
 	<td>${User.lastName}</td>
 	<td>${User.username}</td>
 	<td>${User.address}</td>
+	<td>${User.email}</td>
 	<td><a class="anchor" href="<c:url value="/admin/enableUser/${User.userid}"/>">Enable</a></td>
 	<!--<td><a class="anchor" href="<c:url value="/admin/deleteDisabledUser/${User.userid}"/>">Delete</a></td>-->
 </tr>

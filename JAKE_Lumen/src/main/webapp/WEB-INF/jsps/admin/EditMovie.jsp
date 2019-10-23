@@ -97,6 +97,11 @@ footer {
 		 <form:input path="address"  class="form-control" id="street2_id" name="street2" placeholder="12/12/2012" ></form:input> 
 	</div>	
 	
+	<div class="form-group"> <!-- Street 2 -->
+		<label for="email_id" class="control-label">Email:</label>
+		 <form:input path="email"  class="form-control" id="email_id" name="email" placeholder="12/12/2012" ></form:input> 
+	</div>	
+	
 	<input type="hidden" name="password" value="${user.password}">								
 	<input type="hidden" name="userid" value="${user.userid}">								
 	

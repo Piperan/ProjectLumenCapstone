@@ -9,23 +9,26 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import ca.sheridancollege.bean.Form;
-import ca.sheridancollege.bean.Project;
-import ca.sheridancollege.bean.User;
-import ca.sheridancollege.dao.DAO;
+import ca.sheridancollege.bean.*;
+import ca.sheridancollege.dao.*;
 
 @Controller
 public class HomeController {
 	//DAO Call
 	DAO dao=new DAO();
 	String username;
+	
+	private FileUploadDAO fileUploadDao;
 	
 	//Initial Mapping
 	@GetMapping("/") 
@@ -72,7 +75,6 @@ public class HomeController {
 		}
 		System.out.print("The Current user is " + username);
 		model.addAttribute("username",username);
-		User user = dao.getUserByUsername(username);
 		List<Project> projects=dao.getAllProjectsByUser(dao.getUserByUsername(username));
 		model.addAttribute("projects",projects);
 
@@ -386,6 +388,35 @@ public class HomeController {
 		model.addAttribute("username",getUsername());
 		return "user/viewProject";
 	}
+	@RequestMapping(value = "/user/upload", method = RequestMethod.GET)
+    public String showUploadForm() {
+        return "/user/Upload";
+    }
 	
+	@RequestMapping(value = "/user/doUpload", method = RequestMethod.POST)
+    public String handleFileUpload(@RequestParam MultipartFile[] fileUpload) throws Exception {
+          
+ if (fileUpload != null && fileUpload.length > 0) {
+            for (MultipartFile aFile : fileUpload){
+                  
+                System.out.println("Saving file: " + aFile.getOriginalFilename());
+                System.out.println("Saving file: " + aFile.getBytes());
+                Form uploadFile = new Form();
+                uploadFile.setFormName(aFile.getOriginalFilename());
+                uploadFile.setContent(aFile.getBytes());
+                uploadFile.setUrlPath("HopeThisFuckingWorksOrImGoingToKillKevin");
+                dao.uploadForm(uploadFile);               
+            }
+        }
+  
+        return "/user/Success2";
+    }
+	@PostMapping("/up")
+	public String saveFile(@RequestParam MultipartFile pic,@RequestParam String author) {
+	    System.out.println("osgn jsm ojmpdn");
+	    System.out.println(pic);
+	    System.out.println(author);
+	    return "ok";
+	} 
 	
 }

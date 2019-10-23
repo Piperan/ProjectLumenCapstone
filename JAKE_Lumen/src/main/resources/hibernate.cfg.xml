@@ -4,13 +4,20 @@
 	<session-factory>
 
 		<!-- Database connection settings -->
+		  
 		<property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
 		<property name="connection.url">jdbc:mysql://jakeprojectlumen.mysql.database.azure.com:3306/ProjectLumen?serverTimezone=America/Toronto</property>
-		<!--String url ="jdbc:mysql://jakeprojectlumen.mysql.database.azure.com:3306/{your_database}?useSSL=true&requireSSL=false"; myDbConn = DriverManager.getConnection(url, "Andrew@jakeprojectlumen", {your_password});
-		-->
 		<property name="connection.username">Andrew@jakeprojectlumen</property>
 		<property name="connection.password">6rkceRww</property>
-
+		
+		
+		<!-- 
+		<property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+		<property name="connection.url">jdbc:mysql://localhost:3306/projectLumen?serverTimezone=America/Toronto</property>
+		<property name="connection.username">root</property>
+		<property name="connection.password">root</property>
+		 -->
+		 
 		<!-- Set the database dialect -->
 		<property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
 

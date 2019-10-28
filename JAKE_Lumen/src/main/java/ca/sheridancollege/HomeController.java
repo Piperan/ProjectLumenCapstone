@@ -202,6 +202,15 @@ public class HomeController {
 		model.addAttribute("user",user);
 		return "admin/EditMovie";
 	}
+	@RequestMapping("/user/editProject/{projectId}") 
+	public String goEditProject(Model model, @PathVariable int projectId) { 
+
+		Project project = dao.getProjectById(projectId);
+		model.addAttribute("username",getUsername());
+		model.addAttribute("project",project);
+		model.addAttribute("projForms",dao.getAllFormsByProject(project));
+		return "user/Upload";
+	}
 	@RequestMapping("/admin/enableUser/{userid}") 
 	public String goEnableUsers(Model model, @PathVariable int userid) { 
 
@@ -211,25 +220,7 @@ public class HomeController {
 		model.addAttribute("users",dao.getDisabledUsers());
 		return "admin/registrationRequests";
 	}
-	//Never Used?
-	@RequestMapping("/user/projectAssign") 
-	public String assignProject()
-	{
-		
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (principal instanceof UserDetails) {
-			username = ((UserDetails)principal).getUsername();
-		} else {
-			username = principal.toString();
-		}
-		User x= dao.findUserByName("username");
-		List<Project> prjectList =new ArrayList<Project>();
-		prjectList.add(dao.getProjectById(1));
-		prjectList.add(dao.getProjectById(2));
-		prjectList.add(dao.getProjectById(3));
-		dao.projectUser(x, prjectList);
-		return "user/homeUser";
-	}
+	
 	
 	@RequestMapping("/user/projectForms") 
 	public String formsProject(@ModelAttribute Project project, Model model)
@@ -388,35 +379,28 @@ public class HomeController {
 		model.addAttribute("username",getUsername());
 		return "user/viewProject";
 	}
-	@RequestMapping(value = "/user/upload", method = RequestMethod.GET)
-    public String showUploadForm() {
-        return "/user/Upload";
-    }
-	
-	@RequestMapping(value = "/user/doUpload", method = RequestMethod.POST)
-    public String handleFileUpload(@RequestParam MultipartFile[] fileUpload) throws Exception {
-          
- if (fileUpload != null && fileUpload.length > 0) {
+	@RequestMapping("/user/doUpload/{projectId}")
+    public String handleFileUpload(@RequestParam MultipartFile[] fileUpload, @PathVariable int projectId) throws Exception {
+          Project x=dao.getProjectById(projectId);
+          List<Form> xForms=dao.getAllFormsByProject(x);
+          		if (fileUpload != null && fileUpload.length > 0) {
             for (MultipartFile aFile : fileUpload){
                   
-                System.out.println("Saving file: " + aFile.getOriginalFilename());
+               // System.out.println("Saving file: " + aFile.getOriginalFilename());
                 System.out.println("Saving file: " + aFile.getBytes());
-                Form uploadFile = new Form();
-                uploadFile.setFormName(aFile.getOriginalFilename());
-                uploadFile.setContent(aFile.getBytes());
-                uploadFile.setUrlPath("HopeThisFuckingWorksOrImGoingToKillKevin");
-                dao.uploadForm(uploadFile);               
+                for(Form form:xForms) {
+                	System.out.println("File Name: "+aFile.getOriginalFilename()+" Form Name: "+form.getFormName());
+                }
+                //Form uploadFile = new Form();
+                //uploadFile.setFormName(aFile.getOriginalFilename());
+                //uploadFile.setContent(aFile.getBytes());
+                //uploadFile.setUrlPath("HopeThisFuckingWorksOrImGoingToKillKevin");
+                //dao.uploadForm(uploadFile);               
             }
         }
   
         return "/user/Success2";
     }
-	@PostMapping("/up")
-	public String saveFile(@RequestParam MultipartFile pic,@RequestParam String author) {
-	    System.out.println("osgn jsm ojmpdn");
-	    System.out.println(pic);
-	    System.out.println(author);
-	    return "ok";
-	} 
+
 	
 }

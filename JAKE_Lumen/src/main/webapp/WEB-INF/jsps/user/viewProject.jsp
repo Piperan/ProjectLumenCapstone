@@ -109,9 +109,11 @@ footer {
          <li>Project Type: ${project.type}</li>
           <li>Start Date: ${project.startDate}</li>
           <li>End Date: ${project.endDate}</li>
+         <a class="btn btn-primary btn-lg active" role="button" aria-pressed="true" href="<c:url value="/user/editProject/${project.projectId}"/>">Upload Forms</a>
+			
         </ul>
       </div>
-
+     
     </div>
     <!-- /.row -->
 
@@ -122,13 +124,11 @@ footer {
 		<c:forEach var="forms" items="${projForms}">
 		<div class="col-md-3 col-sm-6 mb-4">
          			 <a href=${forms.urlPath } target="iframe_a" download>${forms.formName}</a>
-				<br>
-				<br>
 				      </div>
 			</c:forEach>
     </div>
     <!-- /.row -->
-
+	
   </div>
 	
 	

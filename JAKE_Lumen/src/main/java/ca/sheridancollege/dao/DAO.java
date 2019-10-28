@@ -135,6 +135,7 @@ public class DAO {
 			//Getting the users projects based of of the project ID and adding to projectList
 			formProjects.forEach((Integer temp) ->{
 				formList.add(getFormById(temp));
+				System.out.println(temp);
 			});
 			 
 			session.getTransaction().commit();

@@ -20,12 +20,18 @@
       google.charts.load("current", {packages:["corechart"]});
       google.charts.setOnLoadCallback(drawChart);
       function drawChart() {
+    	
+    	var type = [];
+    	for (var i = 0; i < ${ResultList}.length; i++){ 
+    		type[i] = ${ResultList}[i];
+    	}
+    	
         var data = google.visualization.arrayToDataTable([
           ['ProjectType', 'NumberOfProjects'],
-          ['Afforrestation & Reforrestation',     11],
-          ['Carbon Capture and Storage',      2],
-          ['Small Scale with AR & RF',  2],
-          ['Small Scale', 2]
+          ['Afforrestation & Reforrestation', type[0] ],
+          ['Carbon Capture and Storage', type[1] ],
+          ['Small Scale with AR & RF', type[2] ],
+          ['Small Scale', type[3] ]
         ]);
 
         var options = {
@@ -83,7 +89,6 @@ footer {
   <br><br><br>
 <div id="donutchart" style="width: 900px; height: 500px;"></div>
  <div class="container">
-  <h2>Reports</h2>
 
  <ul class="nav nav-tabs">
   <li class="nav-item">

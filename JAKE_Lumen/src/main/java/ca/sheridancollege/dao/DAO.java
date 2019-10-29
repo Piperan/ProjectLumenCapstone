@@ -167,14 +167,17 @@ public class DAO {
 		boolean projectAdded = false;
 		
 		// Adding forms to the project
-		List<Project> projects = getAllProjectsByUser(user);
-		projects.add(project);
+		List<Project> projectHolder= new ArrayList<Project>();
+		projectHolder.add(project);
 		List<Form> forms=project.getForms();
 		for (Form var : forms) 
 		{ 
-		    var.setProjects(projects);
+		    var.setProjects(projectHolder);
 		    session.save(var);
 		}
+		
+		List<Project> projects= getAllProjectsByUser(user);
+		projects.add(projectHolder.get(0));
 		
 		//Adding the project to the user
 		User m = (User) session.get(User.class, user.getUserid());
@@ -468,7 +471,7 @@ public class DAO {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 		
-		// Make a List of projects that will hold the users project objects;
+		// Make Lists for the diffrent types of projects;
 		List<Project> projectListAR = new ArrayList<Project>();
 		List<Project> projectListCCS = new ArrayList<Project>();
 		List<Project> projectListSSAR = new ArrayList<Project>();
@@ -480,7 +483,7 @@ public class DAO {
 		query.setParameter("userId", loggedUser.getUserid());
 		usersProjects = (List<Integer>) query.getResultList();
 		
-		//Getting the users projects based of of the project ID and adding to projectList
+		//Sorting the projects into their lists
 		usersProjects.forEach((Integer temp) ->{
 			if (getProjectById(temp).getType().contentEquals("Afforrestation & Reforrestation")) {
 				projectListAR.add(getProjectById(temp));
@@ -499,17 +502,13 @@ public class DAO {
 			}
 		});
 		
+		//Getting the amount of each project and returning 
 		List<Integer> ResultsList = new ArrayList<Integer>();
 		ResultsList.add(projectListAR.size());
 		ResultsList.add(projectListCCS.size());
 		ResultsList.add(projectListSSAR.size());
 		ResultsList.add(projectListSS.size());
-		
-//		ResultsList.forEach((Integer temp) -> {
-//			System.out.print(temp);
-//		});
-		
-		 
+
 		session.getTransaction().commit();
 		session.close();
 

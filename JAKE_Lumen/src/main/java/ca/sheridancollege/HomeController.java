@@ -328,9 +328,23 @@ public class HomeController {
 	}
 	@RequestMapping("/user/myReports") 
 	public String myReport(Model model) { 
-		
+		String username;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+			username = ((UserDetails)principal).getUsername();
+		} else {
+			username = principal.toString();
+		}
 		model.addAttribute("username",getUsername());
-		//model.addAttribute("projects",projList);
+		
+		List<Integer> ResultList = dao.getReportResults(dao.getUserByUsername(username));
+		
+		ResultList.forEach((Integer temp) -> {
+			System.out.print(temp);
+		});
+		
+		model.addAttribute("ResultList", ResultList);
+		
 		return "user/viewReports";
 	}
 	

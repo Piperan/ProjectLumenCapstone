@@ -462,4 +462,57 @@ public class DAO {
 		session.getTransaction().commit();
 		session.close();
 	}
+	
+	
+	public List<Integer> getReportResults(User loggedUser) {
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		
+		// Make a List of projects that will hold the users project objects;
+		List<Project> projectListAR = new ArrayList<Project>();
+		List<Project> projectListCCS = new ArrayList<Project>();
+		List<Project> projectListSSAR = new ArrayList<Project>();
+		List<Project> projectListSS = new ArrayList<Project>();
+		
+		//Get the project Id's Of all the users projects
+		List<Integer> usersProjects;
+		Query query = session.createQuery("Select p.projectId from Project p JOIN p.users where users_userId=:userId");
+		query.setParameter("userId", loggedUser.getUserid());
+		usersProjects = (List<Integer>) query.getResultList();
+		
+		//Getting the users projects based of of the project ID and adding to projectList
+		usersProjects.forEach((Integer temp) ->{
+			if (getProjectById(temp).getType().contentEquals("Afforrestation & Reforrestation")) {
+				projectListAR.add(getProjectById(temp));
+				System.out.println((getProjectById(temp).getType()));
+			}else if (getProjectById(temp).getType().contentEquals("Carbon Capture and Storage")) {
+				projectListCCS.add(getProjectById(temp));
+				System.out.println((getProjectById(temp).getType()));
+			}else if (getProjectById(temp).getType().contentEquals("Small Scale with AR & RF")) {
+				projectListSSAR.add(getProjectById(temp));
+				System.out.println((getProjectById(temp).getType()));
+			}else if (getProjectById(temp).getType().contentEquals("Small Scale")) {
+				projectListSS.add(getProjectById(temp));
+				System.out.println((getProjectById(temp).getType()));
+			}else {
+				System.out.println("Project Type Not Found");
+			}
+		});
+		
+		List<Integer> ResultsList = new ArrayList<Integer>();
+		ResultsList.add(projectListAR.size());
+		ResultsList.add(projectListCCS.size());
+		ResultsList.add(projectListSSAR.size());
+		ResultsList.add(projectListSS.size());
+		
+//		ResultsList.forEach((Integer temp) -> {
+//			System.out.print(temp);
+//		});
+		
+		 
+		session.getTransaction().commit();
+		session.close();
+
+		return ResultsList;
+	}
 }

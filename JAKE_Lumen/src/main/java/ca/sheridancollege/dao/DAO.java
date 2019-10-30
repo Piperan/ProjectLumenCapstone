@@ -117,7 +117,25 @@ public class DAO {
 		session.close();
 
 		return projectList;
+	} 
+	
+	public void deleteUserById2(int id) {
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		
+		//get user
+		User user = getUserById(id);
+		//delete user_role_id from user
+		//user.set
+		
+		//get all of that users project
+		List<Project> userList = getAllProjectsByUser(user);
+		
+
+		session.getTransaction().commit();
+		session.close();
 	}
+	
 	//Method to Retrieve all forms based on the project 
 		public List<Form> getAllFormsByProject(Project proj) {
 			Session session = sessionFactory.openSession();
@@ -343,12 +361,33 @@ public class DAO {
 	public void deleteUserById(int id) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
+		
+		UserRole m = (UserRole) session.get(UserRole.class, id);
+		session.delete(m);
+		
 		User user = getUserById(id);
 		session.delete(user);
 
 		session.getTransaction().commit();
 		session.close();
 	}
+	
+	//Method to edit user role
+		public void editUserRole(int id, UserRole user) {
+			Session session = sessionFactory.openSession();
+			session.beginTransaction();
+			//null user role then delet
+
+			UserRole m = (UserRole) session.get(UserRole.class, id);
+			m.setUser(null);
+
+			session.getTransaction().commit();
+			session.close();
+
+		}
+	
+	
+	
 	
 	//Method to edit a user by their id and a new user object
 	public void editUser(int id, User user) {
@@ -383,6 +422,18 @@ public class DAO {
 		session.getTransaction().commit();
 		session.close();
 
+	}
+	//Method to disable a user by their id
+	public void disableUser (int id, User user) {
+		
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		
+		User m = (User) session.get(User.class, id);
+		m.setEnabled(false);
+				
+		session.getTransaction().commit();
+		session.close();
 	}
 	
 	//Method to generate sample projects

@@ -23,11 +23,12 @@ public class UserRole {
 
 	@Id
 	@GeneratedValue(strategy=javax.persistence.GenerationType.IDENTITY)
-	@Column(name="user_role_id", unique=true, nullable=false)
+	@Column(name="user_role_id", unique=true, nullable=false) 
 	private int role_id;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="userid", nullable=false)
+	@JoinColumn(name="userid", nullable=true)
+	//CHANGED user TO BE NULLABLE SO USERS CAN BE DELETED SINCE userid REFERENCES USER ID
 	private User user;
 	
 	@Column(name="role", nullable=false, length=45)

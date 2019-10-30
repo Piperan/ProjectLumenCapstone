@@ -154,6 +154,7 @@ public class HomeController {
 		model.addAttribute("users",dao.getEnabledUsers());
 		return "admin/viewUsers";
 	}
+	
 	@RequestMapping("/admin/deleteEnabledUser/{userid}") 
 	public String goDeleteEnabledVoter(Model model, @PathVariable int userid) { 
 		User user = dao.getUserById(userid);
@@ -205,6 +206,16 @@ public class HomeController {
 
 		User user = dao.getUserById(userid);
 		dao.enableUser(userid, user);
+		model.addAttribute("username",getUsername());
+		model.addAttribute("users",dao.getDisabledUsers());
+		return "admin/registrationRequests";
+	}
+	
+	@RequestMapping("/admin/disableUser/{userid}") 
+	public String goDisableUsers(Model model, @PathVariable int userid) { 
+
+		User user = dao.getUserById(userid);
+		dao.disableUser(userid, user);
 		model.addAttribute("username",getUsername());
 		model.addAttribute("users",dao.getDisabledUsers());
 		return "admin/registrationRequests";

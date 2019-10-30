@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import ca.sheridancollege.bean.*;
 import ca.sheridancollege.dao.*;
@@ -397,7 +395,7 @@ public class HomeController {
 	public String viewProject(Model model, @PathVariable int projectId) { 
 		Project proj=dao.getProjectById(projectId);
 		model.addAttribute("project",proj);
-		model.addAttribute("project",proj);
+		model.addAttribute("projectID",projectId);
 		model.addAttribute("projForms",dao.getAllFormsByProject(proj));
 		model.addAttribute("username",getUsername());
 		return "user/viewProject";
@@ -407,30 +405,45 @@ public class HomeController {
         return "/user/Upload";
     }
 	
-	@RequestMapping(value = "/user/doUpload", method = RequestMethod.POST)
-    public String handleFileUpload(@RequestParam MultipartFile[] fileUpload) throws Exception {
-          
- if (fileUpload != null && fileUpload.length > 0) {
+	@RequestMapping("/user/doUpload/{projectId}")
+    public String handleFileUpload(@RequestParam MultipartFile[] fileUpload, @PathVariable int projectId) throws Exception {
+          Project x=dao.getProjectById(projectId);
+          List<Form> xForms=dao.getAllFormsByProject(x);
+          		if (fileUpload != null && fileUpload.length > 0) {
             for (MultipartFile aFile : fileUpload){
                   
-                System.out.println("Saving file: " + aFile.getOriginalFilename());
+               // System.out.println("Saving file: " + aFile.getOriginalFilename());
                 System.out.println("Saving file: " + aFile.getBytes());
-                Form uploadFile = new Form();
-                uploadFile.setFormName(aFile.getOriginalFilename());
-                uploadFile.setContent(aFile.getBytes());
-                uploadFile.setUrlPath("HopeThisFuckingWorksOrImGoingToKillKevin");
-                dao.uploadForm(uploadFile);               
+                for(Form form:xForms) {
+                	System.out.println("File Name: "+aFile.getOriginalFilename()+" Form Name: "+form.getFormName());
+                }
+                //Form uploadFile = new Form();
+                //uploadFile.setFormName(aFile.getOriginalFilename());
+                //uploadFile.setContent(aFile.getBytes());
+                //uploadFile.setUrlPath("HopeThisFuckingWorksOrImGoingToKillKevin");
+                //dao.uploadForm(uploadFile);               
             }
         }
   
         return "/user/Success2";
     }
+	
 	@PostMapping("/up")
 	public String saveFile(@RequestParam MultipartFile pic,@RequestParam String author) {
 	    System.out.println("osgn jsm ojmpdn");
 	    System.out.println(pic);
 	    System.out.println(author);
 	    return "ok";
-	} 
+	}
+	
+	@RequestMapping("/user/editProject/{projectId}") 
+	public String goEditProject(Model model, @PathVariable int projectId) { 
+
+		Project project = dao.getProjectById(projectId);
+		model.addAttribute("username",getUsername());
+		model.addAttribute("project",project);
+		model.addAttribute("projForms",dao.getAllFormsByProject(project));
+		return "user/Upload";
+	}
 	
 }

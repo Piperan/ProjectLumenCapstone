@@ -416,25 +416,25 @@ public class HomeController {
     public String handleFileUpload(Model model, @RequestParam MultipartFile[] fileUpload, @PathVariable int projectId, @PathVariable int formid) throws Exception {
           Project x=dao.getProjectById(projectId);
           List<Form> xForms=dao.getAllFormsByProject(x);
-          		if (fileUpload != null && fileUpload.length > 0) {
-            for (MultipartFile aFile : fileUpload){
-            	
-                Form newForm = new Form();
-                newForm.setFormName(aFile.getOriginalFilename());
-                newForm.setContent(aFile.getBytes());
-                newForm.setUrlPath("Placeholder");
-                
-                dao.editUploadForm(formid,newForm);           
-            }
-            
-            Project proj=dao.getProjectById(projectId);
-    		model.addAttribute("project",proj);
-    		model.addAttribute("projectID",projectId);
-    		model.addAttribute("projForms",dao.getAllFormsByProject(proj));
-    		model.addAttribute("username",getUsername());
-        }
+//          		if (fileUpload != null && fileUpload.length > 0) {
+//            for (MultipartFile aFile : fileUpload){
+//            	
+//                Form newForm = new Form();
+//                newForm.setFormName(aFile.getOriginalFilename());
+//                newForm.setContent(aFile.getBytes());
+//                newForm.setUrlPath("Placeholder");
+//                
+//                dao.editUploadForm(formid,newForm);           
+//            }
+//            
+//            Project proj=dao.getProjectById(projectId);
+//    		model.addAttribute("project",proj);
+//    		model.addAttribute("projectID",projectId);
+//    		model.addAttribute("projForms",dao.getAllFormsByProject(proj));
+//    		model.addAttribute("username",getUsername());
+//        }
   
-        return "/user/viewProject";
+        return "/user/Success2";
     }
 //	
 //	@PostMapping("/up")

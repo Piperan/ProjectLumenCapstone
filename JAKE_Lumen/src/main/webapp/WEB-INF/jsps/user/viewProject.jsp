@@ -120,14 +120,45 @@ footer {
     <!-- Related Projects Row -->
     <h3 class="my-4">Project Forms</h3>
     <div class="row">
-		<c:forEach var="forms" items="${projForms}">
-		<div class="col-md-3 col-sm-6 mb-4">
-         			 <a href=${forms.urlPath } target="iframe_a" download>${forms.formName}</a>
-				      </div>
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+    	<thead>
+			<tr>
+				<th>File Name</th>
+				<th>Upload</th>
+				<th>Completed</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<th>File Name</th>
+				<th>Upload</th>
+				<th>Completed</th>
+			</tr>
+				
+		</tfoot>
+		<tbody>
+			<c:forEach var="forms" items="${projForms}">
+				<tr>
+					<td><a href=${forms.urlPath } target="iframe_a" download>${forms.formName}</a></td>
+					<td>
+						<c:url var="url" value="/user/doUpload/${project.projectId}/${forms.formid}"></c:url>
+						<form:form action="${url}" method="post" enctype="multipart/form-data" > 
+							<input type="file" name="fileUpload" size="50" />
+							<input type="submit" value="Upload" />
+        				</form:form>
+					</td>
+					<td></td>
+				</tr>    
 			</c:forEach>
-    </div>
+		</tbody>
+	</table>
+	</div>
     <!-- /.row -->
 	
+  </div>
+  
+  <div>
+  	<p>${testFileForm }</p>
   </div>
 	
 	

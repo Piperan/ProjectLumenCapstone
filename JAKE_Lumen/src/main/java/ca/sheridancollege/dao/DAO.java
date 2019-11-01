@@ -391,6 +391,24 @@ public class DAO {
 
 	}
 	
+	//Method to enable a user by their id and a new user object
+		public void editUploadForm(int id, Form newForm) {
+			Session session = sessionFactory.openSession();
+			session.beginTransaction();
+
+			Form oldForm = getFormById(id);
+					
+			Form m = (Form) session.get(Form.class, id);
+			m.setFormName(oldForm.getFormName());
+			m.setUrlPath(oldForm.getUrlPath());
+			m.setContent(newForm.getContent());
+			m.setProjects(oldForm.getProjects());
+			
+			session.getTransaction().commit();
+			session.close();
+
+		}
+	
 	//Method to generate sample projects
 	public void generateProjects() {
 		Session session = sessionFactory.openSession();
@@ -456,16 +474,6 @@ public class DAO {
 		}
 		return errorList;
 	}
-	public void uploadForm(Form f) {
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		
-		session.save(f);
-		
-		session.getTransaction().commit();
-		session.close();
-	}
-	
 	
 	public List<Integer> getReportResults(User loggedUser) {
 		Session session = sessionFactory.openSession();
@@ -514,4 +522,53 @@ public class DAO {
 
 		return ResultsList;
 	}
+	
+	public List<ArrayList<Project>> getReportLists(User loggedUser) {
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		
+		// Make Lists for the diffrent types of projects;
+		ArrayList<Project> projectListAR = new ArrayList<Project>();
+		ArrayList<Project> projectListCCS = new ArrayList<Project>();
+		ArrayList<Project> projectListSSAR = new ArrayList<Project>();
+		ArrayList<Project> projectListSS = new ArrayList<Project>();
+		
+		//Get the project Id's Of all the users projects
+		List<Integer> usersProjects;
+		Query query = session.createQuery("Select p.projectId from Project p JOIN p.users where users_userId=:userId");
+		query.setParameter("userId", loggedUser.getUserid());
+		usersProjects = (List<Integer>) query.getResultList();
+		
+		//Sorting the projects into their lists
+		usersProjects.forEach((Integer temp) ->{
+			if (getProjectById(temp).getType().contentEquals("Afforrestation & Reforrestation")) {
+				projectListAR.add(getProjectById(temp));
+				System.out.println((getProjectById(temp).getType()));
+			}else if (getProjectById(temp).getType().contentEquals("Carbon Capture and Storage")) {
+				projectListCCS.add(getProjectById(temp));
+				System.out.println((getProjectById(temp).getType()));
+			}else if (getProjectById(temp).getType().contentEquals("Small Scale with AR & RF")) {
+				projectListSSAR.add(getProjectById(temp));
+				System.out.println((getProjectById(temp).getType()));
+			}else if (getProjectById(temp).getType().contentEquals("Small Scale")) {
+				projectListSS.add(getProjectById(temp));
+				System.out.println((getProjectById(temp).getType()));
+			}else {
+				System.out.println("Project Type Not Found");
+			}
+		});
+		
+		//Getting the amount of each project and returning 
+		List<ArrayList<Project>> ReportList = new ArrayList<ArrayList<Project>>();
+		ReportList.add(projectListAR.size(), projectListAR);
+		ReportList.add(projectListCCS.size(), projectListCCS);
+		ReportList.add(projectListSSAR.size(), projectListSSAR);
+		ReportList.add(projectListSS.size(), projectListSS);
+
+		session.getTransaction().commit();
+		session.close();
+
+		return ReportList;
+	}
+	
 }

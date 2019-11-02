@@ -343,16 +343,32 @@ public class DAO {
 			return userList.get(0);
 		}
 	
-	//Method to delete a user by their id
-	public void deleteUserById(int id) {
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		User user = getUserById(id);
-		session.delete(user);
+		//Method to delete a user by their id
+		public void deleteUserById(int id) {
+			Session session = sessionFactory.openSession();
+			session.beginTransaction();
+			
+			UserRole m = (UserRole) session.get(UserRole.class, id);
+			session.delete(m);
+			
+			User user = getUserById(id);
+			session.delete(user);
 
-		session.getTransaction().commit();
-		session.close();
-	}
+			session.getTransaction().commit();
+			session.close();
+		}
+		//Method to disable a user by their id
+		public void disableUser (int id, User user) {
+			
+			Session session = sessionFactory.openSession();
+			session.beginTransaction();
+			
+			User m = (User) session.get(User.class, id);
+			m.setEnabled(false);
+					
+			session.getTransaction().commit();
+			session.close();
+		}
 	
 	//Method to edit a user by their id and a new user object
 	public void editUser(int id, User user) {
@@ -560,10 +576,10 @@ public class DAO {
 		
 		//Getting the amount of each project and returning 
 		List<ArrayList<Project>> ReportList = new ArrayList<ArrayList<Project>>();
-		ReportList.add(projectListAR.size(), projectListAR);
-		ReportList.add(projectListCCS.size(), projectListCCS);
-		ReportList.add(projectListSSAR.size(), projectListSSAR);
-		ReportList.add(projectListSS.size(), projectListSS);
+		ReportList.add(0, projectListAR);
+		ReportList.add(0, projectListCCS);
+		ReportList.add(0, projectListSSAR);
+		ReportList.add(0, projectListSS);
 
 		session.getTransaction().commit();
 		session.close();

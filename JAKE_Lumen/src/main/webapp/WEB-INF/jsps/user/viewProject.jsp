@@ -161,12 +161,10 @@ footer {
     <!-- /.row -->
 	
   </div>
-  
   <div>
   	<p>${testFileForm }</p>
   </div>
-	
-	
+  
 	<!-- Footer -->
 	<footer class="py-5 bg-dark">
 		<div class="container">

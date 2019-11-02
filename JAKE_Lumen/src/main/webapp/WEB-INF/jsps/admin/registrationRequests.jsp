@@ -16,20 +16,14 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <title>Project Lumen- Requests</title>
 <style type="text/css">
-footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  background-color: #333;
-  color:#fff;
-}
+
 </style>
 </head>
 <body>
 <!-- Navigation -->
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-  	 <a class="navbar-brand" href="#"><img src="../images/pl_logo_j.png" width="50" height="50"/></a> 
+  	 <a class="navbar-brand" href="/"><img src="../../images/pl_logo_j.png" width="50" height="50"/></a> 
       <a class="navbar-brand" href="index.html">PROJECT LUMEN</a>
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -49,7 +43,7 @@ footer {
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
               <a class="dropdown-item" href="portfolio-1-col.html">My Profile</a>
-              <a class="dropdown-item" href="mailto:bayanie@sheridancollege.ca">Issues</a>
+              <a class="dropdown-item" href="mailto:jakeprojectlumen@gmail.com">Issues</a>
               <a class="dropdown-item" href="<c:url value="/logout"/>">Logout</a>
             </div>
           </li>
@@ -66,7 +60,7 @@ footer {
         <!-- Breadcrumbs-->
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="#">Dashboard</a>
+            <a href="/admin">Dashboard</a>
           </li>
           <li class="breadcrumb-item active">Users table</li>
         </ol>
@@ -87,6 +81,8 @@ footer {
 						<th>Address</th>
 						<th>Email</th>
 						<th>Enable</th>
+						<th>Edit</th>
+						<th>Delete</th> 
 					<!-- <th>Delete</th>  -->
 				</tr>
 			</thead>
@@ -97,7 +93,9 @@ footer {
 					<th>Username</th>
 					<th>Address</th>
 					<th>Email</th>
+					<th>Enable</th>
 					<th>Edit</th>
+					<th>Delete</th> 
 					<!-- <th>Delete</th>  -->
 				</tr>
 			</tfoot>
@@ -110,7 +108,8 @@ footer {
 	<td>${User.address}</td>
 	<td>${User.email}</td>
 	<td><a class="anchor" href="<c:url value="/admin/enableUser/${User.userid}"/>">Enable</a></td>
-	<!--<td><a class="anchor" href="<c:url value="/admin/deleteDisabledUser/${User.userid}"/>">Delete</a></td>-->
+	<td><a class="anchor" href="<c:url value="/admin/editUser/${User.userid}"/>">Edit</a></td>
+	<td><a class="anchor" href="<c:url value="/admin/deleteDisabledUser/${User.userid}"/>">Delete</a></td>
 </tr>
 </c:forEach>
 </tbody>
@@ -126,7 +125,7 @@ footer {
       <footer class="sticky-footer">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright © Your Website 2019</span>
+            <span>Copyright © Project Lumen</span>
           </div>
         </div>
       </footer>

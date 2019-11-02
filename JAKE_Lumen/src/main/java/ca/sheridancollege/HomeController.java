@@ -180,7 +180,15 @@ public class HomeController {
 		model.addAttribute("username",getUsername());
 		return "admin/registrationRequests";
 	}
-	
+	@RequestMapping("/admin/disableUser/{userid}") 
+	public String goDisableUsers(Model model, @PathVariable int userid) { 
+
+		User user = dao.getUserById(userid);
+		dao.disableUser(userid, user);
+		model.addAttribute("username",getUsername());
+		model.addAttribute("users",dao.getDisabledUsers());
+		return "admin/registrationRequests";
+	}
 	@RequestMapping("/EditUser")
 	public String editUser2(@ModelAttribute User user, Model model, @RequestParam int userid) {
 		
@@ -416,43 +424,25 @@ public class HomeController {
     public String handleFileUpload(Model model, @RequestParam MultipartFile[] fileUpload, @PathVariable int projectId, @PathVariable int formid) throws Exception {
           Project x=dao.getProjectById(projectId);
           List<Form> xForms=dao.getAllFormsByProject(x);
-//          		if (fileUpload != null && fileUpload.length > 0) {
-//            for (MultipartFile aFile : fileUpload){
-//            	
-//                Form newForm = new Form();
-//                newForm.setFormName(aFile.getOriginalFilename());
-//                newForm.setContent(aFile.getBytes());
-//                newForm.setUrlPath("Placeholder");
-//                
-//                dao.editUploadForm(formid,newForm);           
-//            }
-//            
-//            Project proj=dao.getProjectById(projectId);
-//    		model.addAttribute("project",proj);
-//    		model.addAttribute("projectID",projectId);
-//    		model.addAttribute("projForms",dao.getAllFormsByProject(proj));
-//    		model.addAttribute("username",getUsername());
-//        }
+          		if (fileUpload != null && fileUpload.length > 0) {
+            for (MultipartFile aFile : fileUpload){
+            	
+                Form newForm = new Form();
+                newForm.setFormName(aFile.getOriginalFilename());
+                newForm.setContent(aFile.getBytes());
+                newForm.setUrlPath("Placeholder");
+                
+                dao.editUploadForm(formid,newForm);           
+            }
+            
+            Project proj=dao.getProjectById(projectId);
+    		model.addAttribute("project",proj);
+    		model.addAttribute("projectID",projectId);
+    		model.addAttribute("projForms",dao.getAllFormsByProject(proj));
+    		model.addAttribute("username",getUsername());
+        }
   
         return "/user/Success2";
     }
-//	
-//	@PostMapping("/up")
-//	public String saveFile(@RequestParam MultipartFile pic,@RequestParam String author) {
-//	    System.out.println("osgn jsm ojmpdn");
-//	    System.out.println(pic);
-//	    System.out.println(author);
-//	    return "ok";
-//	}
-//	
-//	@RequestMapping("/user/editProject/{projectId}/{formName}") 
-//	public String goEditProject(Model model, @PathVariable int projectId, @PathVariable String formName) { 
-//
-//		Project project = dao.getProjectById(projectId);
-//		model.addAttribute("username",getUsername());
-//		model.addAttribute("project",project);
-//		model.addAttribute("projForms",dao.getAllFormsByProject(project));
-//		return "user/Upload";
-//	}
 	
 }

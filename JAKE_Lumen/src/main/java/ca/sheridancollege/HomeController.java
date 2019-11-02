@@ -351,17 +351,6 @@ public class HomeController {
 		
 		model.addAttribute("ResultList", ResultList);
 		
-		List<ArrayList<Project>> ReportList = dao.getReportLists(dao.getUserByUsername(username));
-		
-		ReportList.forEach((List<Project> temp) -> {
-			temp.forEach((Project temp2) ->{
-				System.out.println("");
-				System.out.println(temp2.getProjectName());
-				System.out.println("");
-			});
-		});
-		
-		
 		return "user/viewReports";
 	}
 	
@@ -419,13 +408,18 @@ public class HomeController {
 		model.addAttribute("username",getUsername());
 		return "user/viewProject";
 	}
+	@RequestMapping(value = "/user/upload", method = RequestMethod.GET)
+    public String showUploadForm() {
+        return "/user/Upload";
+    }
 	
-	@RequestMapping("/user/doUpload/{projectId}/{formid}")
-    public String handleFileUpload(Model model, @RequestParam MultipartFile[] fileUpload, @PathVariable int projectId, @PathVariable int formid) throws Exception {
+	@RequestMapping("/user/doUpload/{projectId}")
+    public String handleFileUpload(@RequestParam MultipartFile[] fileUpload, @PathVariable int projectId) throws Exception {
           Project x=dao.getProjectById(projectId);
           List<Form> xForms=dao.getAllFormsByProject(x);
           		if (fileUpload != null && fileUpload.length > 0) {
             for (MultipartFile aFile : fileUpload){
+<<<<<<< HEAD
             	
                 Form newForm = new Form();
                 newForm.setFormName(aFile.getOriginalFilename());
@@ -440,9 +434,44 @@ public class HomeController {
     		model.addAttribute("projectID",projectId);
     		model.addAttribute("projForms",dao.getAllFormsByProject(proj));
     		model.addAttribute("username",getUsername());
+=======
+                  
+               // System.out.println("Saving file: " + aFile.getOriginalFilename());
+                System.out.println("Saving file: " + aFile.getBytes());
+                for(Form form:xForms) {
+                	System.out.println("File Name: "+aFile.getOriginalFilename()+" Form Name: "+form.getFormName());
+                }
+                //Form uploadFile = new Form();
+                //uploadFile.setFormName(aFile.getOriginalFilename());
+                //uploadFile.setContent(aFile.getBytes());
+                //uploadFile.setUrlPath("HopeThisFuckingWorksOrImGoingToKillKevin");
+                //dao.uploadForm(uploadFile);               
+            }
+>>>>>>> parent of 236bb16... Merge pull request #12 from Piperan/Andrew/11/1/2019
         }
   
         return "/user/Success2";
     }
+<<<<<<< HEAD
+=======
+	
+	@PostMapping("/up")
+	public String saveFile(@RequestParam MultipartFile pic,@RequestParam String author) {
+	    System.out.println("osgn jsm ojmpdn");
+	    System.out.println(pic);
+	    System.out.println(author);
+	    return "ok";
+	}
+	
+	@RequestMapping("/user/editProject/{projectId}") 
+	public String goEditProject(Model model, @PathVariable int projectId) { 
+
+		Project project = dao.getProjectById(projectId);
+		model.addAttribute("username",getUsername());
+		model.addAttribute("project",project);
+		model.addAttribute("projForms",dao.getAllFormsByProject(project));
+		return "user/Upload";
+	}
+>>>>>>> parent of 236bb16... Merge pull request #12 from Piperan/Andrew/11/1/2019
 	
 }

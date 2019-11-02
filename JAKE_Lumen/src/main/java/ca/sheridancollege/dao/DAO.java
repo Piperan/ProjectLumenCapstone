@@ -407,24 +407,6 @@ public class DAO {
 
 	}
 	
-	//Method to enable a user by their id and a new user object
-		public void editUploadForm(int id, Form newForm) {
-			Session session = sessionFactory.openSession();
-			session.beginTransaction();
-
-			Form oldForm = getFormById(id);
-					
-			Form m = (Form) session.get(Form.class, id);
-			m.setFormName(oldForm.getFormName());
-			m.setUrlPath(oldForm.getUrlPath());
-			m.setContent(newForm.getContent());
-			m.setProjects(oldForm.getProjects());
-			
-			session.getTransaction().commit();
-			session.close();
-
-		}
-	
 	//Method to generate sample projects
 	public void generateProjects() {
 		Session session = sessionFactory.openSession();
@@ -490,6 +472,16 @@ public class DAO {
 		}
 		return errorList;
 	}
+	public void uploadForm(Form f) {
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		
+		session.save(f);
+		
+		session.getTransaction().commit();
+		session.close();
+	}
+	
 	
 	public List<Integer> getReportResults(User loggedUser) {
 		Session session = sessionFactory.openSession();
@@ -538,6 +530,7 @@ public class DAO {
 
 		return ResultsList;
 	}
+<<<<<<< HEAD
 	
 	public List<ArrayList<Project>> getReportLists(User loggedUser) {
 		Session session = sessionFactory.openSession();
@@ -587,4 +580,6 @@ public class DAO {
 		return ReportList;
 	}
 	
+=======
+>>>>>>> parent of 236bb16... Merge pull request #12 from Piperan/Andrew/11/1/2019
 }

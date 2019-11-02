@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -109,7 +110,6 @@ footer {
          <li>Project Type: ${project.type}</li>
           <li>Start Date: ${project.startDate}</li>
           <li>End Date: ${project.endDate}</li>
-         <a class="btn btn-primary btn-lg active" role="button" aria-pressed="true" href="<c:url value="/user/editProject/${project.projectId}"/>">Upload Forms</a>
 			
         </ul>
       </div>
@@ -120,14 +120,50 @@ footer {
     <!-- Related Projects Row -->
     <h3 class="my-4">Project Forms</h3>
     <div class="row">
-		<c:forEach var="forms" items="${projForms}">
-		<div class="col-md-3 col-sm-6 mb-4">
-         			 <a href=${forms.urlPath } target="iframe_a" download>${forms.formName}</a>
-				      </div>
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+    	<thead>
+			<tr>
+				<th>File Name</th>
+				<th>Upload</th>
+				<th>Completed</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<th>File Name</th>
+				<th>Upload</th>
+				<th>Completed</th>
+			</tr>
+				
+		</tfoot>
+		<tbody>
+			<c:forEach var="forms" items="${projForms}">
+				<tr>
+					<td><a href=${forms.urlPath } target="iframe_a" download>${forms.formName}</a></td>
+					<td>
+						<c:url var="url" value="/user/doUpload/${project.projectId}/${forms.formid}"></c:url>
+						<form:form action="${url}" method="post" enctype="multipart/form-data"> 
+							<input type="file" name="fileUpload" size="50" />
+							<input type="submit" value="Upload" />
+						</form:form>
+					</td>
+					<td>
+						<c:choose>
+    						<c:when test="${forms.content != null}">YES</c:when>    
+    						<c:otherwise>NO</c:otherwise>
+						</c:choose>
+					</td>
+				</tr>    
 			</c:forEach>
-    </div>
+		</tbody>
+	</table>
+	</div>
     <!-- /.row -->
 	
+  </div>
+  
+  <div>
+  	<p>${testFileForm }</p>
   </div>
 	
 	

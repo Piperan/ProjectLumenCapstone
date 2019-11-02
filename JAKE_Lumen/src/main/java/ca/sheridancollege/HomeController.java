@@ -61,18 +61,23 @@ public class HomeController {
 		}
 		return getMe;
 	}
+	
 	@RequestMapping("/user") 
 	public String goSecuredHome(Model model)
 	{
 		String username;
+		User x = null;
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof UserDetails) {
 			username = ((UserDetails)principal).getUsername();
+			x=dao.getUserByUsername(username);
 		} else {
 			username = principal.toString();
 		}
 		System.out.print("The Current user is " + username);
+	
 		model.addAttribute("username",username);
+		model.addAttribute("userid",x.getUserid());
 		List<Project> projects=dao.getAllProjectsByUser(dao.getUserByUsername(username));
 		model.addAttribute("projects",projects);
 
@@ -87,18 +92,20 @@ public class HomeController {
 		model.addAttribute("projects",dao.getAllProjects());
 		return "user/homeUser";
 	}
+	
 	@RequestMapping("/generateProj") 
 	public String goGenProj(@ModelAttribute User user, Model model)
 	{
 		dao.generateProjects();
 		return "user/homeUser";
 	}
+	
 	@GetMapping("/admin") 
 	public String goAdminHome()
 	{
-		
 		return "admin/th_home";
 	}
+	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
     public String loginPage(Model model) {
         return "th_login";
@@ -116,6 +123,7 @@ public class HomeController {
              response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/user"));
          }
     }
+    
 	@RequestMapping("/Edit/{username}") 
 	public String editMovie(Model model, @PathVariable String username) {
 		return "user/th_home"; 
@@ -128,6 +136,7 @@ public class HomeController {
 	    model.addAttribute("username",getUsername());
 		return "register";
 	}
+	
 	@RequestMapping("/registerSend") 
 	public String goregisterSend(Model model, @ModelAttribute User user)
 	{
@@ -140,6 +149,7 @@ public class HomeController {
 	    model.addAttribute("user",p2);
 		return "register";
 	}
+	
 	@GetMapping("/admin/registrationRequests") 
 	public String goRegistrationRequestPage(Model model)
 	{
@@ -147,6 +157,7 @@ public class HomeController {
 		model.addAttribute("users",dao.getDisabledUsers());
 		return "admin/registrationRequests";
 	}
+	
 	@GetMapping("/admin/viewUsers") 
 	public String goViewUsersPage(Model model)
 	{
@@ -154,6 +165,7 @@ public class HomeController {
 		model.addAttribute("users",dao.getEnabledUsers());
 		return "admin/viewUsers";
 	}
+	
 	@RequestMapping("/admin/deleteEnabledUser/{userid}") 
 	public String goDeleteEnabledVoter(Model model, @PathVariable int userid) { 
 		User user = dao.getUserById(userid);
@@ -167,6 +179,7 @@ public class HomeController {
 		model.addAttribute("username",getUsername());
 		return "admin/viewUsers";
 	}
+	
 	@RequestMapping("/admin/deleteDisabledUser/{userid}") 
 	public String goDeleteDisabledVoter(Model model, @PathVariable int userid) { 
 		User user = dao.getUserById(userid);
@@ -191,7 +204,6 @@ public class HomeController {
 	}
 	@RequestMapping("/EditUser")
 	public String editUser2(@ModelAttribute User user, Model model, @RequestParam int userid) {
-		
 		dao.editUser(userid, user);
 		
 		List<User> users = dao.getAllUsers();
@@ -200,13 +212,50 @@ public class HomeController {
 		return "admin/viewUsers";
 
 	}
+	
+	@RequestMapping("/EditUser/MyProfile")
+	public String editMyProfile(@ModelAttribute User user, Model model) {
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+			username = ((UserDetails)principal).getUsername();
+		} else {
+			username = principal.toString();
+		}
+		
+		dao.editMyProfile(dao.getUserByUsername(username).getUserid(), user);
+		
+		model.addAttribute("username",getUsername());
+		
+		model.addAttribute("user",user);
+		
+		return "user/EditProfile";
+	}
+	
 	@RequestMapping("/admin/editUser/{userid}") 
 	public String goEditUser(Model model, @PathVariable int userid) { 
 
 		User user = dao.getUserById(userid);
 		model.addAttribute("username",getUsername());
 		model.addAttribute("user",user);
-		return "admin/EditMovie";
+		return "admin/homeUser";
+	}
+	@RequestMapping("/user/editUser") 
+	public String goEditMyProfile(Model model) { 
+		String username;
+		User x = null;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+			username = ((UserDetails)principal).getUsername();
+			x=dao.getUserByUsername(username);
+		} else {
+			username = principal.toString();
+		}
+		User user = dao.getUserByUsername(username);
+		model.addAttribute("username",getUsername());
+		user.setPassword("New Password");
+		model.addAttribute("user",user);
+		return "user/EditProfile";
 	}
 	@RequestMapping("/admin/enableUser/{userid}") 
 	public String goEnableUsers(Model model, @PathVariable int userid) { 
@@ -217,25 +266,7 @@ public class HomeController {
 		model.addAttribute("users",dao.getDisabledUsers());
 		return "admin/registrationRequests";
 	}
-	//Never Used?
-	@RequestMapping("/user/projectAssign") 
-	public String assignProject()
-	{
-		
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (principal instanceof UserDetails) {
-			username = ((UserDetails)principal).getUsername();
-		} else {
-			username = principal.toString();
-		}
-		User x= dao.findUserByName("username");
-		List<Project> prjectList =new ArrayList<Project>();
-		prjectList.add(dao.getProjectById(1));
-		prjectList.add(dao.getProjectById(2));
-		prjectList.add(dao.getProjectById(3));
-		dao.projectUser(x, prjectList);
-		return "user/homeUser";
-	}
+	
 	
 	@RequestMapping("/user/projectForms") 
 	public String formsProject(@ModelAttribute Project project, Model model)
@@ -351,17 +382,6 @@ public class HomeController {
 		
 		model.addAttribute("ResultList", ResultList);
 		
-		List<ArrayList<Project>> ReportList = dao.getReportLists(dao.getUserByUsername(username));
-		
-		ReportList.forEach((List<Project> temp) -> {
-			temp.forEach((Project temp2) ->{
-				System.out.println("");
-				System.out.println(temp2.getProjectName());
-				System.out.println("");
-			});
-		});
-		
-		
 		return "user/viewReports";
 	}
 	
@@ -419,9 +439,9 @@ public class HomeController {
 		model.addAttribute("username",getUsername());
 		return "user/viewProject";
 	}
-	
-	@RequestMapping("/user/doUpload/{projectId}/{formid}")
-    public String handleFileUpload(Model model, @RequestParam MultipartFile[] fileUpload, @PathVariable int projectId, @PathVariable int formid) throws Exception {
+
+	@RequestMapping("/user/doUpload/{projectId}")
+    public String handleFileUpload(@RequestParam MultipartFile[] fileUpload, @PathVariable int projectId) throws Exception {
           Project x=dao.getProjectById(projectId);
           List<Form> xForms=dao.getAllFormsByProject(x);
           		if (fileUpload != null && fileUpload.length > 0) {
@@ -444,5 +464,14 @@ public class HomeController {
   
         return "/user/Success2";
     }
-	
+
+	@RequestMapping("/user/editProject/{projectId}") 
+	public String goEditProject(Model model, @PathVariable int projectId) { 
+
+		Project project = dao.getProjectById(projectId);
+		model.addAttribute("username",getUsername());
+		model.addAttribute("project",project);
+		model.addAttribute("projForms",dao.getAllFormsByProject(project));
+		return "user/Upload";
+	}
 }

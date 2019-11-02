@@ -2,7 +2,11 @@ package ca.sheridancollege;
 
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -180,15 +184,7 @@ public class HomeController {
 		model.addAttribute("username",getUsername());
 		return "admin/registrationRequests";
 	}
-	@RequestMapping("/admin/disableUser/{userid}") 
-	public String goDisableUsers(Model model, @PathVariable int userid) { 
-
-		User user = dao.getUserById(userid);
-		dao.disableUser(userid, user);
-		model.addAttribute("username",getUsername());
-		model.addAttribute("users",dao.getDisabledUsers());
-		return "admin/registrationRequests";
-	}
+	
 	@RequestMapping("/EditUser")
 	public String editUser2(@ModelAttribute User user, Model model, @RequestParam int userid) {
 		
@@ -217,25 +213,7 @@ public class HomeController {
 		model.addAttribute("users",dao.getDisabledUsers());
 		return "admin/registrationRequests";
 	}
-	//Never Used?
-	@RequestMapping("/user/projectAssign") 
-	public String assignProject()
-	{
-		
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (principal instanceof UserDetails) {
-			username = ((UserDetails)principal).getUsername();
-		} else {
-			username = principal.toString();
-		}
-		User x= dao.findUserByName("username");
-		List<Project> prjectList =new ArrayList<Project>();
-		prjectList.add(dao.getProjectById(1));
-		prjectList.add(dao.getProjectById(2));
-		prjectList.add(dao.getProjectById(3));
-		dao.projectUser(x, prjectList);
-		return "user/homeUser";
-	}
+	
 	
 	@RequestMapping("/user/projectForms") 
 	public String formsProject(@ModelAttribute Project project, Model model)
@@ -321,6 +299,7 @@ public class HomeController {
 		
 		
 		model.addAttribute("formsList", project.getForms());
+		model.addAttribute("username", username);
 		model.addAttribute("error",warning);	
 	    
 		return "user/createProject";
@@ -344,16 +323,73 @@ public class HomeController {
 		model.addAttribute("username",getUsername());
 		
 		List<Integer> ResultList = dao.getReportResults(dao.getUserByUsername(username));
-		
+		//List<ArrayList<Project>> ReportList = dao.getReportLists(dao.getUserByUsername(username));
+		List<Project> overdue = new ArrayList<Project>();
+		ArrayList<Project> projectListAR = new ArrayList<Project>();
+		ArrayList<Project> projectListCCS = new ArrayList<Project>();
+		ArrayList<Project> projectListSSAR = new ArrayList<Project>();
+		ArrayList<Project> projectListSS = new ArrayList<Project>();
+	
+			Date date = new Date();
+		   DateFormat df = new SimpleDateFormat("dd/MM/yy");
+	       System.out.println(df.format(date));
+	       
+	       List<ArrayList<Project>> ReportList = dao.getReportLists(dao.getUserByUsername(username));
+			
+			ReportList.forEach((List<Project> temp) -> {
+				temp.forEach((Project temp2) ->{
+					Date test;
+					try {
+						test = new SimpleDateFormat("dd/MM/yyyy").parse(temp2.getEndDate());
+					
+					System.out.println("");
+					System.out.println(temp2.getProjectName());
+					//projectListAR.add(temp2);
+					System.out.println("");
+					
+					if (temp2.getType().contentEquals("Afforrestation & Reforrestation")) {
+						projectListAR.add(temp2);
+					
+					}else if (temp2.getType().contentEquals("Carbon Capture and Storage")) {
+						projectListCCS.add(temp2);
+					
+					}else if (temp2.getType().contentEquals("Small Scale with AR & RF")) {
+						projectListSSAR.add(temp2);
+						
+					}else if (temp2.getType().contentEquals("Small Scale")) {
+						projectListSS.add(temp2);
+				
+					}else {
+						System.out.println("Project Type Not Found");
+					}
+					
+					
+					if (test.before(date)) {
+						System.out.println(date);
+						System.out.println(temp2.getProjectName());
+						overdue.add(temp2);
+					}
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				});
+			});
+			
 		ResultList.forEach((Integer temp) -> {
 			System.out.print(temp);
 		});
 		
 		model.addAttribute("ResultList", ResultList);
+		model.addAttribute("projectListSS", projectListSS);
+		model.addAttribute("projectListAR", projectListAR);
+		model.addAttribute("projectListSSAR", projectListSSAR);
+		model.addAttribute("projectListCCS", projectListCCS);
+		model.addAttribute("overDue", overdue);
 		
 		return "user/viewReports";
 	}
-	
+		
 	@RequestMapping("/user/myOverdue") 
 	public String tryMe(Model model) { 
 		String username;
@@ -408,18 +444,13 @@ public class HomeController {
 		model.addAttribute("username",getUsername());
 		return "user/viewProject";
 	}
-	@RequestMapping(value = "/user/upload", method = RequestMethod.GET)
-    public String showUploadForm() {
-        return "/user/Upload";
-    }
 	
-	@RequestMapping("/user/doUpload/{projectId}")
-    public String handleFileUpload(@RequestParam MultipartFile[] fileUpload, @PathVariable int projectId) throws Exception {
+	@RequestMapping("/user/doUpload/{projectId}/{formid}")
+    public String handleFileUpload(Model model, @RequestParam MultipartFile[] fileUpload, @PathVariable int projectId, @PathVariable int formid) throws Exception {
           Project x=dao.getProjectById(projectId);
           List<Form> xForms=dao.getAllFormsByProject(x);
           		if (fileUpload != null && fileUpload.length > 0) {
             for (MultipartFile aFile : fileUpload){
-<<<<<<< HEAD
             	
                 Form newForm = new Form();
                 newForm.setFormName(aFile.getOriginalFilename());
@@ -434,44 +465,86 @@ public class HomeController {
     		model.addAttribute("projectID",projectId);
     		model.addAttribute("projForms",dao.getAllFormsByProject(proj));
     		model.addAttribute("username",getUsername());
-=======
-                  
-               // System.out.println("Saving file: " + aFile.getOriginalFilename());
-                System.out.println("Saving file: " + aFile.getBytes());
-                for(Form form:xForms) {
-                	System.out.println("File Name: "+aFile.getOriginalFilename()+" Form Name: "+form.getFormName());
-                }
-                //Form uploadFile = new Form();
-                //uploadFile.setFormName(aFile.getOriginalFilename());
-                //uploadFile.setContent(aFile.getBytes());
-                //uploadFile.setUrlPath("HopeThisFuckingWorksOrImGoingToKillKevin");
-                //dao.uploadForm(uploadFile);               
-            }
->>>>>>> parent of 236bb16... Merge pull request #12 from Piperan/Andrew/11/1/2019
         }
   
-        return "/user/Success2";
+        return "/user/viewProject";
     }
-<<<<<<< HEAD
-=======
 	
-	@PostMapping("/up")
-	public String saveFile(@RequestParam MultipartFile pic,@RequestParam String author) {
-	    System.out.println("osgn jsm ojmpdn");
-	    System.out.println(pic);
-	    System.out.println(author);
-	    return "ok";
-	}
-	
-	@RequestMapping("/user/editProject/{projectId}") 
-	public String goEditProject(Model model, @PathVariable int projectId) { 
+	@RequestMapping("/admin/disableUser/{userid}") 
+	public String goDisableUsers(Model model, @PathVariable int userid) { 
 
-		Project project = dao.getProjectById(projectId);
+		User user = dao.getUserById(userid);
+		dao.disableUser(userid, user);
 		model.addAttribute("username",getUsername());
-		model.addAttribute("project",project);
-		model.addAttribute("projForms",dao.getAllFormsByProject(project));
-		return "user/Upload";
+		model.addAttribute("users",dao.getDisabledUsers());
+		return "admin/registrationRequests";
 	}
->>>>>>> parent of 236bb16... Merge pull request #12 from Piperan/Andrew/11/1/2019
+	
+	@RequestMapping("/user/editUser") 
+	public String goEditMyProfile(Model model) { 
+		String username;
+		User x = null;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+			username = ((UserDetails)principal).getUsername();
+			x=dao.getUserByUsername(username);
+		} else {
+			username = principal.toString();
+		}
+		User user = dao.getUserByUsername(username);
+		model.addAttribute("username",getUsername());
+		user.setPassword("New Password");
+		model.addAttribute("user",user);
+		return "user/EditProfile";
+	}
+	
+	@RequestMapping("/EditUser/MyProfile")
+	public String editMyProfile(@ModelAttribute User user, Model model) {
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+			username = ((UserDetails)principal).getUsername();
+		} else {
+			username = principal.toString();
+		}
+		
+		dao.editMyProfile(dao.getUserByUsername(username).getUserid(), user);
+		
+		model.addAttribute("username",getUsername());
+		
+		model.addAttribute("user",user);
+		
+		return "user/EditProfile";
+	}
+	
+	//view a additional forms-Kyle
+		/*@RequestMapping("/user/additionalForms/{projectId}") 
+		public String additionalForms(Model model, @PathVariable int projectId) { 
+			Project proj=dao.getProjectById(projectId);
+			model.addAttribute("project",proj);
+			model.addAttribute("projectID",projectId);
+			model.addAttribute("projForms",dao.getAllFormsByProject(proj));
+			model.addAttribute("username",getUsername());
+			return "user/viewProject";
+		}*/
+	
+//	
+//	@PostMapping("/up")
+//	public String saveFile(@RequestParam MultipartFile pic,@RequestParam String author) {
+//	    System.out.println("osgn jsm ojmpdn");
+//	    System.out.println(pic);
+//	    System.out.println(author);
+//	    return "ok";
+//	}
+//	
+//	@RequestMapping("/user/editProject/{projectId}/{formName}") 
+//	public String goEditProject(Model model, @PathVariable int projectId, @PathVariable String formName) { 
+//
+//		Project project = dao.getProjectById(projectId);
+//		model.addAttribute("username",getUsername());
+//		model.addAttribute("project",project);
+//		model.addAttribute("projForms",dao.getAllFormsByProject(project));
+//		return "user/Upload";
+//	}
 	
 }

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
      <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,6 +18,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
+
+	
       google.charts.load("current", {packages:["corechart"]});
       google.charts.setOnLoadCallback(drawChart);
       function drawChart() {
@@ -68,7 +71,7 @@ footer {
            <a class="nav-link" href="<c:url value="/user"/>">Home</a>
           </li>
           <li class="nav-item">
-          <a class="nav-link" href="<c:url value="user/myReports"/>">Reports</a>
+          <a class="nav-link" href="<c:url value="/user/myReports"/>">Reports</a>
           </li>
           <c:set var = "result" scope = "session" value = "${username}"/>
           <li class="nav-item dropdown">
@@ -76,8 +79,9 @@ footer {
               ${username}
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
-              <a class="dropdown-item" href="portfolio-1-col.html">My Profile</a>
-              <a class="dropdown-item" href="mailto:bayanie@sheridancollege.ca">Issues</a>
+              <a class="dropdown-item" href="<c:url value="/user/editUser"/>">My
+								Profile</a>
+              <a class="dropdown-item" href="mailto:projectlumenjake@gmail.com">Issues</a>
               <a class="dropdown-item" href="<c:url value="/logout"/>">Logout</a>
             </div>
           </li>
@@ -96,47 +100,196 @@ footer {
   </li>
   <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Project Type</a>
-    <div class="dropdown-menu">
+    <div class="dropdown-menu" id="dropdown">
       <a class="dropdown-item" href="#myReportPage">Afforrestation & Reforrestation</a>
       <a class="dropdown-item" href="#myReportPage">Carbon Capture and Storage</a>
       <a class="dropdown-item" href="#myReportPage">Small Scale</a>
-      <a class="dropdown-item" href="#myReportPage">Small Scale with AR & RF</a>
+      <a class="dropdown-item" href="#myReportPage">Small Scale with AR & RF</p>
       <div class="dropdown-divider"></div>
     </div>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#">Link</a>
+    
   </li>
   
 </ul>
-</div>
+<script type="text/javascript"> 
+    $(document).ready(function() {
+	   if($("#dropdown").selectedIndex == 3){
+			$("#myReportPage").hide;  
+			$("CCS").show();  
+			$("SSAR").hide();  
+			$("AR").hide();  
+			$("SS").hide();  
+   		}
+ 		else{
+   			//document.getElementById("myReportPage").style.display = "none";
+   		}
+	)});
+      
+
+
+        	
+        
+</script>
 <div id="myReportPage">
      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-              <thead>
-				<tr>
-					<th>First Name</th>
-					<th>Last Name</th>
-					<th>Username</th>
-					<th>Address</th>
-					<th>Edit</th>
-					<!-- <th>Delete</th>  -->
-				</tr>
-			</thead>
-			  <tfoot>
-				<tr>
-					<th>First Name</th>
-					<th>Last Name</th>
-					<th>Username</th>
-					<th>Address</th>
-					<th>Edit</th>
-				</tr>
+ <thead>
+ <tr>
+	<th>Project Name</th>
+    <th>Project Description</th> 
+    <th>Type </th>
+    <th>Start Date</th>
+    <th>End Date </th>
+	</tr>
+    <c:forEach var="project" items="${overDue}">
+	
+  
+  	<tr>
+    <td>${project.projectName}</td>
+    <td>${project.projectDesc}</td>
+  	<td>${project.type}</td>
+  	<td>${project.startDate}</td>
+  	<td>${project.endDate} </td>
+    </tr>
+  </c:forEach>
+  
+</thead>
+
 			</tfoot>
 			<tbody>
-<tr>
 	
 </tr>
 </tbody>
 </table>
+</div>
+
+<div id="CCS" margin="2em"  >
+     <table class="table table-bordered" id="dataTable" margin="2em" cellspacing="0">
+ <thead>
+ <tr>
+	<th>Project Name</th>
+    <th>Project Description</th> 
+    <th>Type </th>
+    <th>Start Date</th>
+    <th>End Date </th>
+	</tr>
+    <c:forEach var="project" items="${projectListCCS}">
+	
+  
+  	<tr>
+    <td>${project.projectName}</td>
+    <td>${project.projectDesc}</td>
+  	<td>${project.type}</td>
+  	<td>${project.startDate}</td>
+  	<td>${project.endDate} </td>
+    </tr>
+  </c:forEach>
+  
+</thead>
+
+			</tfoot>
+			<tbody>
+	
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="SSAR"  >
+     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+ <thead>
+ <tr>
+	<th>Project Name</th>
+    <th>Project Description</th> 
+    <th>Type </th>
+    <th>Start Date</th>
+    <th>End Date </th>
+	</tr>
+    <c:forEach var="project" items="${projectListSSAR}">
+	
+  
+  	<tr>
+    <td>${project.projectName}</td>
+    <td>${project.projectDesc}</td>
+  	<td>${project.type}</td>
+  	<td>${project.startDate}</td>
+  	<td>${project.endDate} </td>
+    </tr>
+  </c:forEach>
+  
+</thead>
+
+			</tfoot>
+			<tbody>
+	
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="AR"  ">
+     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+ <thead>
+ <tr>
+	<th>Project Name</th>
+    <th>Project Description</th> 
+    <th>Type </th>
+    <th>Start Date</th>
+    <th>End Date </th>
+	</tr>
+    <c:forEach var="project" items="${projectListAR}">
+	
+  
+  	<tr>
+    <td>${project.projectName}</td>
+    <td>${project.projectDesc}</td>
+  	<td>${project.type}</td>
+  	<td>${project.startDate}</td>
+  	<td>${project.endDate} </td>
+    </tr>
+  </c:forEach>
+  
+</thead>
+
+			</tfoot>
+			<tbody>
+	
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="SS"  >
+     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+ <thead>
+ <tr>
+	<th>Project Name</th>
+    <th>Project Description</th> 
+    <th>Type </th>
+    <th>Start Date</th>
+    <th>End Date </th>
+	</tr>
+    <c:forEach var="project" items="${projectListSS}">
+	
+  
+  	<tr>
+    <td>${project.projectName}</td>
+    <td>${project.projectDesc}</td>
+  	<td>${project.type}</td>
+  	<td>${project.startDate}</td>
+  	<td>${project.endDate} </td>
+    </tr>
+  </c:forEach>
+  
+</thead>
+
+			</tfoot>
+			<tbody>
+	
+</tr>
+</tbody>
+</table>
+</div>
+
 </div>
   <!-- Footer -->
   <footer class="py-5 bg-dark">

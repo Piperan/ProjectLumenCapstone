@@ -40,21 +40,21 @@ footer {
           <li class="nav-item">
            <a class="nav-link" href="<c:url value="/user"/>">Home</a>
           </li>
-          <li class="nav-item"><a class="nav-link"
-						href="<c:url value="/user/myReports"/>">Reports</a>
-			</li>
+          <li class="nav-item">
+          <a class="nav-link" href="<c:url value="/user/myReports"/>">Reports</a>
+          </li>
           <c:set var = "result" scope = "session" value = "${username}"/>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPortfolio" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               ${username}
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
-              <a class="dropdown-item" href="portfolio-1-col.html">My Profile</a>
-              <a class="dropdown-item" href="mailto:jakeprojectlumen@gmail.com">Issues</a>
+              <a class="dropdown-item" href="<c:url value="/user/editUser"/>">My
+								Profile</a>
+              <a class="dropdown-item" href="mailto:projectlumenjake@gmail.com">Issues</a>
               <a class="dropdown-item" href="<c:url value="/logout"/>">Logout</a>
             </div>
           </li>
-        
         </ul>
       </div>
     </div>
@@ -69,7 +69,7 @@ footer {
 
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="/user/saveProject">Create Project</a>
+        <a href="#">Create Project</a>
       </li>
       <li class="breadcrumb-item active">New</li>
     </ol>
@@ -107,6 +107,8 @@ footer {
 	</div> 
 	    
 </form:form>	
+
+<table>
 	<c:forEach var="e" items="${errorList}">
 	${e}<br>
 	</c:forEach>
@@ -116,18 +118,21 @@ footer {
 		
 		<c:choose>
    		 <c:when test="${result=='Project Added'}">
+   		 <h4>Please download the following forms: </h4>
+   		  <tr>
            <c:forEach var="e" items="${formsList}">
-           <tr>
+          
 			<td><a href=${e.urlPath} target="iframe_a" download>${e.formName}</a></td>
-			</tr>
+			
 	</c:forEach>
-	<iframe height="900px" width="100%" src="https://cdm.unfccc.int/Reference/PDDs_Forms/index.html" name="iframe_a"></iframe>
+	</tr>
     </c:when>    
     <c:otherwise>
           
     </c:otherwise>
 </c:choose>
-
+</table>
+<iframe height="900px" width="100%" src="https://cdm.unfccc.int/Reference/PDDs_Forms/index.html" name="iframe_a"></iframe>
 <!-- end of bootstrap form -->
 
   </div>

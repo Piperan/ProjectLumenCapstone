@@ -357,18 +357,6 @@ public class DAO {
 			session.getTransaction().commit();
 			session.close();
 		}
-		//Method to disable a user by their id
-		public void disableUser (int id, User user) {
-			
-			Session session = sessionFactory.openSession();
-			session.beginTransaction();
-			
-			User m = (User) session.get(User.class, id);
-			m.setEnabled(false);
-					
-			session.getTransaction().commit();
-			session.close();
-		}
 	
 	//Method to edit a user by their id and a new user object
 	public void editUser(int id, User user) {
@@ -406,6 +394,24 @@ public class DAO {
 		session.close();
 
 	}
+	
+	//Method to enable a user by their id and a new user object
+		public void editUploadForm(int id, Form newForm) {
+			Session session = sessionFactory.openSession();
+			session.beginTransaction();
+
+			Form oldForm = getFormById(id);
+					
+			Form m = (Form) session.get(Form.class, id);
+			m.setFormName(oldForm.getFormName());
+			m.setUrlPath(oldForm.getUrlPath());
+			m.setContent(newForm.getContent());
+			m.setProjects(oldForm.getProjects());
+			
+			session.getTransaction().commit();
+			session.close();
+
+		}
 	
 	//Method to generate sample projects
 	public void generateProjects() {
@@ -472,16 +478,6 @@ public class DAO {
 		}
 		return errorList;
 	}
-	public void uploadForm(Form f) {
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		
-		session.save(f);
-		
-		session.getTransaction().commit();
-		session.close();
-	}
-	
 	
 	public List<Integer> getReportResults(User loggedUser) {
 		Session session = sessionFactory.openSession();
@@ -530,7 +526,6 @@ public class DAO {
 
 		return ResultsList;
 	}
-<<<<<<< HEAD
 	
 	public List<ArrayList<Project>> getReportLists(User loggedUser) {
 		Session session = sessionFactory.openSession();
@@ -579,7 +574,38 @@ public class DAO {
 
 		return ReportList;
 	}
-	
-=======
->>>>>>> parent of 236bb16... Merge pull request #12 from Piperan/Andrew/11/1/2019
+	//Method to disable a user by their id
+		public void disableUser (int id, User user) {
+			
+			Session session = sessionFactory.openSession();
+			session.beginTransaction();
+			
+			User m = (User) session.get(User.class, id);
+			m.setEnabled(false);
+					
+			session.getTransaction().commit();
+			session.close();
+		}
+		
+		//My Profile
+		public void editMyProfile(int id, User user) {
+			Session session = sessionFactory.openSession();
+			session.beginTransaction();
+			String password = user.getPassword();
+			
+			// Password Hasher
+			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			String hashedPassword = passwordEncoder.encode(password);
+			
+			User m = (User) session.get(User.class, id);
+			m.setFirstName(user.getFirstName());
+			m.setLastName(user.getLastName());
+			m.setUsername(user.getUsername());
+			m.setPassword(user.getPassword());
+			m.setEmail(user.getEmail());
+			m.setAddress(user.getAddress());
+			m.setPassword(hashedPassword);
+			session.getTransaction().commit();
+			session.close();
+		}
 }

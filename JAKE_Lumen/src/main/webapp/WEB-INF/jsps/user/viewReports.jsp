@@ -68,7 +68,7 @@ footer {
            <a class="nav-link" href="<c:url value="/user"/>">Home</a>
           </li>
           <li class="nav-item">
-          <a class="nav-link" href="<c:url value="user/myReports"/>">Reports</a>
+          <a class="nav-link" href="<c:url value="/user/myReports"/>">Reports</a>
           </li>
           <c:set var = "result" scope = "session" value = "${username}"/>
           <li class="nav-item dropdown">
@@ -76,8 +76,9 @@ footer {
               ${username}
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
-              <a class="dropdown-item" href="portfolio-1-col.html">My Profile</a>
-              <a class="dropdown-item" href="mailto:bayanie@sheridancollege.ca">Issues</a>
+              <a class="dropdown-item" href="<c:url value="/user/editUser"/>">My
+								Profile</a>
+              <a class="dropdown-item" href="mailto:projectlumenjake@gmail.com">Issues</a>
               <a class="dropdown-item" href="<c:url value="/logout"/>">Logout</a>
             </div>
           </li>
@@ -86,6 +87,7 @@ footer {
     </div>
   </nav>
   <!-- end of navigation -->
+  
   <br><br><br>
 <div id="donutchart" style="width: 900px; height: 500px;"></div>
  <div class="container">

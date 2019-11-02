@@ -193,7 +193,15 @@ public class HomeController {
 		model.addAttribute("username",getUsername());
 		return "admin/registrationRequests";
 	}
-	
+	@RequestMapping("/admin/disableUser/{userid}") 
+	public String goDisableUsers(Model model, @PathVariable int userid) { 
+
+		User user = dao.getUserById(userid);
+		dao.disableUser(userid, user);
+		model.addAttribute("username",getUsername());
+		model.addAttribute("users",dao.getDisabledUsers());
+		return "admin/registrationRequests";
+	}
 	@RequestMapping("/EditUser")
 	public String editUser2(@ModelAttribute User user, Model model, @RequestParam int userid) {
 		dao.editUser(userid, user);
@@ -438,31 +446,25 @@ public class HomeController {
           List<Form> xForms=dao.getAllFormsByProject(x);
           		if (fileUpload != null && fileUpload.length > 0) {
             for (MultipartFile aFile : fileUpload){
-                  
-               // System.out.println("Saving file: " + aFile.getOriginalFilename());
-                System.out.println("Saving file: " + aFile.getBytes());
-                for(Form form:xForms) {
-                	System.out.println("File Name: "+aFile.getOriginalFilename()+" Form Name: "+form.getFormName());
-                }
-                //Form uploadFile = new Form();
-                //uploadFile.setFormName(aFile.getOriginalFilename());
-                //uploadFile.setContent(aFile.getBytes());
-                //uploadFile.setUrlPath("HopeThisFuckingWorksOrImGoingToKillKevin");
-                //dao.uploadForm(uploadFile);               
+            	
+                Form newForm = new Form();
+                newForm.setFormName(aFile.getOriginalFilename());
+                newForm.setContent(aFile.getBytes());
+                newForm.setUrlPath("Placeholder");
+                
+                dao.editUploadForm(formid,newForm);           
             }
+            
+            Project proj=dao.getProjectById(projectId);
+    		model.addAttribute("project",proj);
+    		model.addAttribute("projectID",projectId);
+    		model.addAttribute("projForms",dao.getAllFormsByProject(proj));
+    		model.addAttribute("username",getUsername());
         }
   
         return "/user/Success2";
     }
-	
-	@PostMapping("/up")
-	public String saveFile(@RequestParam MultipartFile pic,@RequestParam String author) {
-	    System.out.println("osgn jsm ojmpdn");
-	    System.out.println(pic);
-	    System.out.println(author);
-	    return "ok";
-	}
-	
+
 	@RequestMapping("/user/editProject/{projectId}") 
 	public String goEditProject(Model model, @PathVariable int projectId) { 
 
@@ -472,5 +474,4 @@ public class HomeController {
 		model.addAttribute("projForms",dao.getAllFormsByProject(project));
 		return "user/Upload";
 	}
-	
 }

@@ -54,8 +54,8 @@ footer {
 				<ul class="navbar-nav ml-auto">
 					<li class="nav-item"><a class="nav-link"
 						href="<c:url value="/user/saveProject"/>">Create Project</a></li>
-					<li class="nav-item"><a class="nav-link"
-						href="<c:url value="user/reports"/>">Reports</a></li>
+				<li class="nav-item"><a class="nav-link"
+						href="<c:url value="/user/myReports"/>">Reports</a></li>
 					<c:set var="result" scope="session" value="${username}" />
 					<li class="nav-item dropdown"><a
 						class="nav-link dropdown-toggle" href="#"
@@ -63,7 +63,7 @@ footer {
 						aria-haspopup="true" aria-expanded="false"> ${username} </a>
 						<div class="dropdown-menu dropdown-menu-right"
 							aria-labelledby="navbarDropdownPortfolio">
-							<a class="dropdown-item" href="portfolio-1-col.html">My
+							<a class="dropdown-item" href="<c:url value="/user/editUser"/>">My
 								Profile</a> <a class="dropdown-item" href="portfolio-2-col.html">Issues</a>
 							<a class="dropdown-item" href="<c:url value="/logout"/>">Logout</a>
 						</div></li>

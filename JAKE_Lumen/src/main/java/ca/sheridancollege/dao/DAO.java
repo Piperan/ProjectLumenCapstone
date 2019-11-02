@@ -372,6 +372,36 @@ public class DAO {
 
 	}
 	
+	//My Profile
+	public void editMyProfile(int id, User user) {
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		String password = user.getPassword();
+		
+		System.out.println("------------------------------------");
+		System.out.println("DAO: "+ password);
+		System.out.println("------------------------------------");
+		
+		// Password Hasher
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String hashedPassword = passwordEncoder.encode(password);
+		
+		System.out.println("------------------------------------");
+		System.out.println("DAO Hashed: "+ hashedPassword);
+		System.out.println("------------------------------------");
+		
+		User m = (User) session.get(User.class, id);
+		m.setFirstName(user.getFirstName());
+		m.setLastName(user.getLastName());
+		m.setUsername(user.getUsername());
+		m.setPassword(user.getPassword());
+		m.setEmail(user.getEmail());
+		m.setAddress(user.getAddress());
+		m.setPassword(hashedPassword);
+		session.getTransaction().commit();
+		session.close();
+
+	}
 	//Method to enable a user by their id and a new user object
 	public void enableUser(int id, User user) {
 		Session session = sessionFactory.openSession();

@@ -343,16 +343,32 @@ public class DAO {
 			return userList.get(0);
 		}
 	
-	//Method to delete a user by their id
-	public void deleteUserById(int id) {
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		User user = getUserById(id);
-		session.delete(user);
+		//Method to delete a user by their id
+		public void deleteUserById(int id) {
+			Session session = sessionFactory.openSession();
+			session.beginTransaction();
+			
+			UserRole m = (UserRole) session.get(UserRole.class, id);
+			session.delete(m);
+			
+			User user = getUserById(id);
+			session.delete(user);
 
-		session.getTransaction().commit();
-		session.close();
-	}
+			session.getTransaction().commit();
+			session.close();
+		}
+		//Method to disable a user by their id
+		public void disableUser (int id, User user) {
+			
+			Session session = sessionFactory.openSession();
+			session.beginTransaction();
+			
+			User m = (User) session.get(User.class, id);
+			m.setEnabled(false);
+					
+			session.getTransaction().commit();
+			session.close();
+		}
 	
 	//Method to edit a user by their id and a new user object
 	public void editUser(int id, User user) {
@@ -372,36 +388,6 @@ public class DAO {
 
 	}
 	
-	//My Profile
-	public void editMyProfile(int id, User user) {
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		String password = user.getPassword();
-		
-		System.out.println("------------------------------------");
-		System.out.println("DAO: "+ password);
-		System.out.println("------------------------------------");
-		
-		// Password Hasher
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		String hashedPassword = passwordEncoder.encode(password);
-		
-		System.out.println("------------------------------------");
-		System.out.println("DAO Hashed: "+ hashedPassword);
-		System.out.println("------------------------------------");
-		
-		User m = (User) session.get(User.class, id);
-		m.setFirstName(user.getFirstName());
-		m.setLastName(user.getLastName());
-		m.setUsername(user.getUsername());
-		m.setPassword(user.getPassword());
-		m.setEmail(user.getEmail());
-		m.setAddress(user.getAddress());
-		m.setPassword(hashedPassword);
-		session.getTransaction().commit();
-		session.close();
-
-	}
 	//Method to enable a user by their id and a new user object
 	public void enableUser(int id, User user) {
 		Session session = sessionFactory.openSession();
@@ -420,6 +406,24 @@ public class DAO {
 		session.close();
 
 	}
+	
+	//Method to enable a user by their id and a new user object
+		public void editUploadForm(int id, Form newForm) {
+			Session session = sessionFactory.openSession();
+			session.beginTransaction();
+
+			Form oldForm = getFormById(id);
+					
+			Form m = (Form) session.get(Form.class, id);
+			m.setFormName(oldForm.getFormName());
+			m.setUrlPath(oldForm.getUrlPath());
+			m.setContent(newForm.getContent());
+			m.setProjects(oldForm.getProjects());
+			
+			session.getTransaction().commit();
+			session.close();
+
+		}
 	
 	//Method to generate sample projects
 	public void generateProjects() {
@@ -486,16 +490,6 @@ public class DAO {
 		}
 		return errorList;
 	}
-	public void uploadForm(Form f) {
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		
-		session.save(f);
-		
-		session.getTransaction().commit();
-		session.close();
-	}
-	
 	
 	public List<Integer> getReportResults(User loggedUser) {
 		Session session = sessionFactory.openSession();
@@ -544,4 +538,53 @@ public class DAO {
 
 		return ResultsList;
 	}
+	
+	public List<ArrayList<Project>> getReportLists(User loggedUser) {
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		
+		// Make Lists for the diffrent types of projects;
+		ArrayList<Project> projectListAR = new ArrayList<Project>();
+		ArrayList<Project> projectListCCS = new ArrayList<Project>();
+		ArrayList<Project> projectListSSAR = new ArrayList<Project>();
+		ArrayList<Project> projectListSS = new ArrayList<Project>();
+		
+		//Get the project Id's Of all the users projects
+		List<Integer> usersProjects;
+		Query query = session.createQuery("Select p.projectId from Project p JOIN p.users where users_userId=:userId");
+		query.setParameter("userId", loggedUser.getUserid());
+		usersProjects = (List<Integer>) query.getResultList();
+		
+		//Sorting the projects into their lists
+		usersProjects.forEach((Integer temp) ->{
+			if (getProjectById(temp).getType().contentEquals("Afforrestation & Reforrestation")) {
+				projectListAR.add(getProjectById(temp));
+				System.out.println((getProjectById(temp).getType()));
+			}else if (getProjectById(temp).getType().contentEquals("Carbon Capture and Storage")) {
+				projectListCCS.add(getProjectById(temp));
+				System.out.println((getProjectById(temp).getType()));
+			}else if (getProjectById(temp).getType().contentEquals("Small Scale with AR & RF")) {
+				projectListSSAR.add(getProjectById(temp));
+				System.out.println((getProjectById(temp).getType()));
+			}else if (getProjectById(temp).getType().contentEquals("Small Scale")) {
+				projectListSS.add(getProjectById(temp));
+				System.out.println((getProjectById(temp).getType()));
+			}else {
+				System.out.println("Project Type Not Found");
+			}
+		});
+		
+		//Getting the amount of each project and returning 
+		List<ArrayList<Project>> ReportList = new ArrayList<ArrayList<Project>>();
+		ReportList.add(0, projectListAR);
+		ReportList.add(0, projectListCCS);
+		ReportList.add(0, projectListSSAR);
+		ReportList.add(0, projectListSS);
+
+		session.getTransaction().commit();
+		session.close();
+
+		return ReportList;
+	}
+	
 }

@@ -49,9 +49,8 @@ footer {
               ${username}
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
-              <a class="dropdown-item" href="<c:url value="/user/editUser"/>">My
-								Profile</a>
-              <a class="dropdown-item" href="mailto:bayanie@sheridancollege.ca?subject=Issues on Project Lumen.">Issues</a>
+              <a class="dropdown-item" href="portfolio-1-col.html">My Profile</a>
+              <a class="dropdown-item" href="mailto:jakeprojectlumen@gmail.com">Issues</a>
               <a class="dropdown-item" href="<c:url value="/logout"/>">Logout</a>
             </div>
           </li>
@@ -70,7 +69,7 @@ footer {
 
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="#">Create Project</a>
+        <a href="/user/saveProject">Create Project</a>
       </li>
       <li class="breadcrumb-item active">New</li>
     </ol>
